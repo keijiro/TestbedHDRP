@@ -18,7 +18,7 @@ MonoBehaviour:
     enableContactShadows: 1
     enableSSR: 1
     enableSSAO: 1
-    enableSubsurfaceScattering: 1
+    enableSubsurfaceScattering: 0
     enableTransmission: 1
     diffuseGlobalDimmer: 1
     specularGlobalDimmer: 1
@@ -41,7 +41,7 @@ MonoBehaviour:
     enableMSAA: 0
     enableShadowMask: 0
     lightLoopSettings:
-      enableTileAndCluster: 1
+      enableTileAndCluster: 0
       enableComputeLightEvaluation: 1
       enableComputeLightVariants: 1
       enableComputeMaterialVariants: 1
@@ -49,10 +49,10 @@ MonoBehaviour:
       enableBigTilePrepass: 1
       isFptlEnabled: 1
   renderPipelineSettings:
-    supportShadowMask: 1
+    supportShadowMask: 0
     supportSSR: 1
     supportSSAO: 1
-    supportSubsurfaceScattering: 1
+    supportSubsurfaceScattering: 0
     supportForwardOnly: 0
     enableUltraQualitySSS: 0
     supportDBuffer: 0

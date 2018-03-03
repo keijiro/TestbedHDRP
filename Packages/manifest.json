@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "com.unity.ads": "exclude",
+    "com.unity.analytics": "exclude",
+    "com.unity.standardevents": "exclude",
+    "com.unity.purchasing": "exclude",
+    "com.unity.package-manager-ui": "1.8.1",
+    "com.unity.render-pipelines.high-definition": "1.0.1-beta"
+  }
+}

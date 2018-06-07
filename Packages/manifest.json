@@ -4,7 +4,7 @@
     "com.unity.analytics": "exclude",
     "com.unity.standardevents": "exclude",
     "com.unity.purchasing": "exclude",
-    "com.unity.package-manager-ui": "1.8.1",
-    "com.unity.render-pipelines.high-definition": "1.0.1-beta"
+    "com.unity.package-manager-ui": "1.8.8",
+    "com.unity.render-pipelines.high-definition": "1.1.10-preview"
   }
 }

@@ -1,5 +1,5 @@
 #include "SimplexNoise3D.hlsl"
-#include "Utils.hlsl"
+#include "Utilities.hlsl"
 
 half _Extrusion;
 float4 _Effector;

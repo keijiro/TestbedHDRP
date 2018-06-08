@@ -4,7 +4,7 @@ using UnityEngine.Timeline;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
-public sealed class Effector : MonoBehaviour, ITimeControl, IPropertyPreview
+public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
 {
     #region Editable attributes
 

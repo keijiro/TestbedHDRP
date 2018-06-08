@@ -5,7 +5,7 @@
 // Search with "Custom:" to check modifications from the original shader.
 //
 
-Shader "Custom Shader"
+Shader "Voxelizer"
 {
     Properties
     {

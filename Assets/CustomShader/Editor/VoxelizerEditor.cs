@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 
-[CustomEditor(typeof(Effector))]
-sealed class EffectorEditor : Editor
+[CustomEditor(typeof(Voxelizer))]
+sealed class VoxelizerEditor : Editor
 {
     SerializedProperty _extrusion;
     ReorderableList _renderers;

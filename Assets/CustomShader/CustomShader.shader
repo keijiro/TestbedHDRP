@@ -23,10 +23,6 @@
     #pragma target 4.5
     #pragma require geometry
 
-    #pragma vertex Vert
-    #pragma geometry Geom
-    #pragma fragment Frag
-
     #define _NORMALMAP_TANGENT_SPACE
     #define _NORMALMAP
 
@@ -54,6 +50,9 @@
                 Pass Replace
             }
             HLSLPROGRAM
+            #pragma vertex VertNull
+            #pragma geometry Geom
+            #pragma fragment Frag
             #define SHADERPASS SHADERPASS_GBUFFER
             #include "CustomShader.hlsl"
             ENDHLSL
@@ -63,6 +62,9 @@
             Tags{ "LightMode" = "ShadowCaster" }
             ColorMask 0
             HLSLPROGRAM
+            #pragma vertex VertNull
+            #pragma geometry Geom
+            #pragma fragment Frag
             #define SHADERPASS SHADERPASS_SHADOWS
             #define USE_LEGACY_UNITY_MATRIX_VARIABLES
             #include "CustomShader.hlsl"

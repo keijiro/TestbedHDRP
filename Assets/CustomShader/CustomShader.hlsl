@@ -8,14 +8,19 @@
 #endif
 
 #include "HDRP/Material/Lit/LitData.hlsl"
-#include "HDRP/ShaderPass/VertMesh.hlsl"
+
+#if SHADERPASS == SHADERPASS_GBUFFER
+#include "HDRP/ShaderPass/ShaderPassGBuffer.hlsl"
+#elif SHADERPASS == SHADERPASS_SHADOWS
+#include "HDRP/ShaderPass/ShaderPassDepthOnly.hlsl"
+#endif
 
 #include "SimplexNoise3D.hlsl"
 #include "Utils.hlsl"
 
 // Empty vertex shader
 // We do all the vertex calculations in the geometry shader.
-void Vert(inout Attributes input) {}
+void VertNull(inout Attributes input) {}
 
 float3 ConstructNormal(float3 v1, float3 v2, float3 v3)
 {
@@ -31,7 +36,9 @@ PackedVaryingsMeshToPS OutputVertex(AttributesMesh src, float3 p, half3 n)
     return PackVaryingsMeshToPS(VertMesh(src));
 }
 
+//
 // Geometry shader
+//
 [maxvertexcount(15)]
 void Geom(
     triangle Attributes input[3],
@@ -94,52 +101,3 @@ void Geom(
     outStream.Append(OutputVertex(i0, p0, n));
     outStream.RestartStrip();
 }
-
-//
-// Fragment shader
-//
-
-#if SHADERPASS == SHADERPASS_GBUFFER
-
-// GBuffer pass
-void Frag(PackedVaryingsMeshToPS packedInput, OUTPUT_GBUFFER(outGBuffer))
-{
-    FragInputs input = UnpackVaryingsMeshToFragInputs(packedInput);
-
-    // input.positionSS is SV_Position
-    PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionWS);
-
-#ifdef VARYINGS_NEED_POSITION_WS
-    float3 V = GetWorldSpaceNormalizeViewDir(input.positionWS);
-#else
-    float3 V = 0; // Avoid the division by 0
-#endif
-
-    SurfaceData surfaceData;
-    BuiltinData builtinData;
-    GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
-
-#ifdef DEBUG_DISPLAY
-    ApplyDebugToSurfaceData(input.worldToTangent, surfaceData);
-#endif
-
-    BSDFData bsdfData = ConvertSurfaceDataToBSDFData(surfaceData);
-
-    PreLightData preLightData = GetPreLightData(V, posInput, bsdfData);
-
-    float3 bakeDiffuseLighting = GetBakedDiffuseLighting(surfaceData, builtinData, bsdfData, preLightData);
-
-    ENCODE_INTO_GBUFFER(surfaceData, bakeDiffuseLighting, posInput.positionSS, outGBuffer);
-    ENCODE_SHADOWMASK_INTO_GBUFFER(float4(builtinData.shadowMask0, builtinData.shadowMask1, builtinData.shadowMask2, builtinData.shadowMask3), outShadowMaskBuffer);
-
-#ifdef _DEPTHOFFSET_ON
-    outputDepth = posInput.deviceDepth;
-#endif
-}
-
-#elif SHADERPASS == SHADERPASS_SHADOWS
-
-// Shdow caster pass
-half4 Frag(PackedVaryingsMeshToPS packedInput) : SV_Target { return 0; }
-
-#endif

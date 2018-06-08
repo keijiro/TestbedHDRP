@@ -10,55 +10,12 @@
 #include "HDRP/Material/Lit/LitData.hlsl"
 #include "HDRP/ShaderPass/VertMesh.hlsl"
 
-// We have to redefine the attributes struct to change the type of
-// positionOS to float4; It's originally defined as float3 and
-// emits "Not all elements of SV_Position were written" error.
-
-struct Attributes
-{
-    float4 positionOS   : POSITION;
-#ifdef ATTRIBUTES_NEED_NORMAL
-    float3 normalOS     : NORMAL;
-#endif
-#ifdef ATTRIBUTES_NEED_TANGENT
-    float4 tangentOS    : TANGENT; // Store sign in w
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD0
-    float2 uv0          : TEXCOORD0;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD1
-    float2 uv1          : TEXCOORD1;
-#endif
-#ifdef ATTRIBUTES_NEED_COLOR
-    float4 color        : COLOR;
-#endif
-};
-
-AttributesMesh ConvertToAttributesMesh(Attributes input)
-{
-    AttributesMesh am;
-    am.positionOS = input.positionOS.xyz;
-#ifdef ATTRIBUTES_NEED_NORMAL
-    am.normalOS = input.normalOS;
-#endif
-#ifdef ATTRIBUTES_NEED_TANGENT
-    am.tangentOS = input.tangentOS;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD0
-    am.uv0 = input.uv0;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD1
-    am.uv1 = input.uv1;
-#endif
-#ifdef ATTRIBUTES_NEED_COLOR
-    am.color = input.color;
-#endif
-    return am;
-}
+#include "SimplexNoise3D.hlsl"
+#include "Utils.hlsl"
 
 // Empty vertex shader
-// We do all the vertex things in the geometry shader.
-void Vert(inout Attributes input) { }
+// We do all the vertex calculations in the geometry shader.
+void Vert(inout Attributes input) {}
 
 float3 ConstructNormal(float3 v1, float3 v2, float3 v3)
 {
@@ -138,24 +95,33 @@ void Geom(
     outStream.RestartStrip();
 }
 
+//
 // Fragment shader
-void Frag(
-    PackedVaryingsMeshToPS packedInput,
+//
+
 #if SHADERPASS == SHADERPASS_GBUFFER
-    OUTPUT_GBUFFER(outGBuffer)
-#else
-    out float4 outColor : SV_Target
-#endif
-)
+
+// GBuffer pass
+void Frag(PackedVaryingsMeshToPS packedInput, OUTPUT_GBUFFER(outGBuffer))
 {
-#if SHADERPASS == SHADERPASS_GBUFFER
     FragInputs input = UnpackVaryingsMeshToFragInputs(packedInput);
+
+    // input.positionSS is SV_Position
     PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionWS);
+
+#ifdef VARYINGS_NEED_POSITION_WS
     float3 V = GetWorldSpaceNormalizeViewDir(input.positionWS);
+#else
+    float3 V = 0; // Avoid the division by 0
+#endif
 
     SurfaceData surfaceData;
     BuiltinData builtinData;
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
+
+#ifdef DEBUG_DISPLAY
+    ApplyDebugToSurfaceData(input.worldToTangent, surfaceData);
+#endif
 
     BSDFData bsdfData = ConvertSurfaceDataToBSDFData(surfaceData);
 
@@ -163,15 +129,17 @@ void Frag(
 
     float3 bakeDiffuseLighting = GetBakedDiffuseLighting(surfaceData, builtinData, bsdfData, preLightData);
 
-    LayerTexCoord tc;
-    ZERO_INITIALIZE(LayerTexCoord, tc);
-    GetLayerTexCoord(input, tc);
-
     ENCODE_INTO_GBUFFER(surfaceData, bakeDiffuseLighting, posInput.positionSS, outGBuffer);
     ENCODE_SHADOWMASK_INTO_GBUFFER(float4(builtinData.shadowMask0, builtinData.shadowMask1, builtinData.shadowMask2, builtinData.shadowMask3), outShadowMaskBuffer);
-#endif
 
-#if SHADERPASS == SHADERPASS_SHADOWS
-    outColor = 0;
+#ifdef _DEPTHOFFSET_ON
+    outputDepth = posInput.deviceDepth;
 #endif
 }
+
+#elif SHADERPASS == SHADERPASS_SHADOWS
+
+// Shdow caster pass
+half4 Frag(PackedVaryingsMeshToPS packedInput) : SV_Target { return 0; }
+
+#endif

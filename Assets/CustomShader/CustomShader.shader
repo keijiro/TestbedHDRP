@@ -6,7 +6,7 @@
         _BaseColorMap("BaseColorMap", 2D) = "white" {}
         _Metallic("_Metallic", Range(0.0, 1.0)) = 0
         _Smoothness("Smoothness", Range(0.0, 1.0)) = 1.0
-        _NormalMap("NormalMap", 2D) = "bump" {}     // Tangent space normal map
+        _NormalMap("NormalMap", 2D) = "bump" {}
         _NormalScale("_NormalScale", Range(0.0, 2.0)) = 1
 
         [HideInInspector] _UVMappingMask("", Color) = (1, 0, 0, 0)
@@ -104,19 +104,76 @@
             // We do all the vertex things in the geometry shader.
             void Vert(inout Attributes input) { }
 
+            float3 ConstructNormal(float3 v1, float3 v2, float3 v3)
+            {
+                return normalize(cross(v2 - v1, v3 - v1));
+            }
+
+            PackedVaryingsMeshToPS OutputVertex(AttributesMesh src, float3 p, half3 n)
+            {
+                src.positionOS = p;
+                src.normalOS = n;
+                return PackVaryingsMeshToPS(VertMesh(src));
+            }
+
             // Geometry shader
             [maxvertexcount(15)]
             void Geom(
                 triangle Attributes input[3],
+                uint pid : SV_PrimitiveID,
                 inout TriangleStream<PackedVaryingsMeshToPS> outStream
             )
             {
-                AttributesMesh v1 = ConvertToAttributesMesh(input[0]);
-                AttributesMesh v2 = ConvertToAttributesMesh(input[1]);
-                AttributesMesh v3 = ConvertToAttributesMesh(input[2]);
-                outStream.Append(PackVaryingsMeshToPS(VertMesh(v1)));
-                outStream.Append(PackVaryingsMeshToPS(VertMesh(v2)));
-                outStream.Append(PackVaryingsMeshToPS(VertMesh(v3)));
+                AttributesMesh i0 = ConvertToAttributesMesh(input[0]);
+                AttributesMesh i1 = ConvertToAttributesMesh(input[1]);
+                AttributesMesh i2 = ConvertToAttributesMesh(input[2]);
+
+                float3 p0 = i0.positionOS;
+                float3 p1 = i1.positionOS;
+                float3 p2 = i2.positionOS;
+
+                // Extrusion amount
+                float ext = saturate(0.4 - cos(_Time.y) * 0.41);
+                ext *= 0.3 + 0.1 * sin(frac(pid * 2.374843) * PI * 2 + _Time.y * 8.76);
+
+                // Extrusion points
+                float3 offs = ConstructNormal(p0, p1, p2) * ext;
+                float3 p3 = p0 + offs;
+                float3 p4 = p1 + offs;
+                float3 p5 = p2 + offs;
+
+                // Cap triangle
+                float3 n = ConstructNormal(p3, p4, p5);
+                float np = saturate(ext * 10);
+                float3 n0 = lerp(i0.normalOS, n, np);
+                float3 n1 = lerp(i1.normalOS, n, np);
+                float3 n2 = lerp(i2.normalOS, n, np);
+                outStream.Append(OutputVertex(i0, p3, n0));
+                outStream.Append(OutputVertex(i1, p4, n1));
+                outStream.Append(OutputVertex(i2, p5, n2));
+                outStream.RestartStrip();
+
+                // Side faces
+                float4 t = float4(normalize(p3 - p0), 1);
+                n = ConstructNormal(p3, p0, p4);
+                outStream.Append(OutputVertex(i0, p3, n));
+                outStream.Append(OutputVertex(i0, p0, n));
+                outStream.Append(OutputVertex(i1, p4, n));
+                outStream.Append(OutputVertex(i1, p1, n));
+                outStream.RestartStrip();
+
+                n = ConstructNormal(p4, p1, p5);
+                outStream.Append(OutputVertex(i1, p4, n));
+                outStream.Append(OutputVertex(i1, p1, n));
+                outStream.Append(OutputVertex(i2, p5, n));
+                outStream.Append(OutputVertex(i2, p2, n));
+                outStream.RestartStrip();
+
+                n = ConstructNormal(p5, p2, p3);
+                outStream.Append(OutputVertex(i2, p5, n));
+                outStream.Append(OutputVertex(i2, p2, n));
+                outStream.Append(OutputVertex(i0, p3, n));
+                outStream.Append(OutputVertex(i0, p0, n));
                 outStream.RestartStrip();
             }
 

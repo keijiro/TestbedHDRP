@@ -1,26 +1,5 @@
-#include "HDRP/ShaderVariables.hlsl"
-#include "HDRP/Material/Material.hlsl"
-
-#if SHADERPASS == SHADERPASS_GBUFFER
-#include "HDRP/Material/Lit/ShaderPass/LitSharePass.hlsl"
-#elif SHADERPASS == SHADERPASS_SHADOWS
-#include "HDRP/Material/Lit/ShaderPass/LitDepthPass.hlsl"
-#endif
-
-#include "HDRP/Material/Lit/LitData.hlsl"
-
-#if SHADERPASS == SHADERPASS_GBUFFER
-#include "HDRP/ShaderPass/ShaderPassGBuffer.hlsl"
-#elif SHADERPASS == SHADERPASS_SHADOWS
-#include "HDRP/ShaderPass/ShaderPassDepthOnly.hlsl"
-#endif
-
 #include "SimplexNoise3D.hlsl"
 #include "Utils.hlsl"
-
-// Empty vertex shader
-// We do all the vertex calculations in the geometry shader.
-void VertNull(inout Attributes input) {}
 
 float3 ConstructNormal(float3 v1, float3 v2, float3 v3)
 {
@@ -36,9 +15,6 @@ PackedVaryingsMeshToPS OutputVertex(AttributesMesh src, float3 p, half3 n)
     return PackVaryingsMeshToPS(VertMesh(src));
 }
 
-//
-// Geometry shader
-//
 [maxvertexcount(15)]
 void Geom(
     triangle Attributes input[3],

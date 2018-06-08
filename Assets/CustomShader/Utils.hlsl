@@ -93,3 +93,7 @@ AttributesMesh ConvertToAttributesMesh(Attributes input)
     UNITY_TRANSFER_INSTANCE_ID(input, am);
     return am;
 }
+
+// Empty vertex shader
+// We do all the vertex calculations in the geometry shader.
+void VertNull(inout Attributes input) {}

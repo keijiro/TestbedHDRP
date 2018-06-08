@@ -1,6 +1,10 @@
 #include "SimplexNoise3D.hlsl"
 #include "Utils.hlsl"
 
+half _Extrusion;
+float4 _Effector;
+float _LocalTime;
+
 float3 ConstructNormal(float3 v1, float3 v2, float3 v3)
 {
     return normalize(cross(v2 - v1, v3 - v1));
@@ -31,8 +35,9 @@ void Geom(
     float3 p2 = i2.positionOS;
 
     // Extrusion amount
-    float ext = saturate(0.4 - cos(_Time.y) * 0.41);
-    ext *= 0.3 + 0.1 * sin(frac(pid * 2.374843) * PI * 2 + _Time.y * 8.76);
+    float3 pc = TransformObjectToWorld((p0 + p1 + p2) / 3);
+    float ext = saturate(dot(pc, _Effector.xyz) - _Effector.w);
+    ext *= max(0, _Extrusion * sin(frac(pid * 2.374843) * PI * 2 + _LocalTime * 8.76));
 
     // Extrusion points
     float3 offs = ConstructNormal(p0, p1, p2) * ext;

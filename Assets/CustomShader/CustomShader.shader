@@ -1,9 +1,11 @@
 ﻿//
-// The most part of this shader is simply copyed and pasted from the HDRP Lit
-// shader. You can find modifications with "Custom:" comments.
+// Custom lit shader with geometry modification
+//
+// This is basically a slightly modified version of the HDRP Lit shader.
+// Search with "Custom:" to check modifications from the original shader.
 //
 
-Shader "Test Custom Shader"
+Shader "Custom Shader"
 {
     Properties
     {
@@ -208,7 +210,7 @@ Shader "Test Custom Shader"
     #pragma target 4.5
     #pragma only_renderers d3d11 ps4 xboxone vulkan metal
 
-    // Custom: We require the geometry shader feature.
+    // Custom: Requires the geometry shader features.
     #pragma require geometry
 
     //-------------------------------------------------------------------------------------
@@ -300,7 +302,7 @@ Shader "Test Custom Shader"
     #include "HDRP/Material/Lit/LitProperties.hlsl"
 
     // All our shaders use same name for entry point
-    // Custom: Disable the vertex shader and change to use our geometry shader.
+    // Custom: Disabling vertex shader and enabling the custom geometry shader.
     #pragma vertex VertNull
     #pragma geometry Geom
     #pragma fragment Frag

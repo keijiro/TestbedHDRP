@@ -46,7 +46,6 @@
         Pass
         {
             Tags { "LightMode" = "GBuffer" }
-
             Stencil
             {
                 WriteMask [_StencilWriteMask]
@@ -54,26 +53,19 @@
                 Comp Always
                 Pass Replace
             }
-
             HLSLPROGRAM
-
             #define SHADERPASS SHADERPASS_GBUFFER
             #include "CustomShader.hlsl"
-
             ENDHLSL
         }
         Pass
         {
             Tags{ "LightMode" = "ShadowCaster" }
-
             ColorMask 0
-
             HLSLPROGRAM
-
             #define SHADERPASS SHADERPASS_SHADOWS
             #define USE_LEGACY_UNITY_MATRIX_VARIABLES
             #include "CustomShader.hlsl"
-
             ENDHLSL
         }
     }

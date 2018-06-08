@@ -3,9 +3,7 @@
 
 #if SHADERPASS == SHADERPASS_GBUFFER
 #include "HDRP/Material/Lit/ShaderPass/LitSharePass.hlsl"
-#endif
-
-#if SHADERPASS == SHADERPASS_SHADOWS
+#elif SHADERPASS == SHADERPASS_SHADOWS
 #include "HDRP/Material/Lit/ShaderPass/LitDepthPass.hlsl"
 #endif
 

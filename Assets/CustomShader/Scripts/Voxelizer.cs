@@ -8,14 +8,20 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
 {
     #region Editable attributes
 
-    [SerializeField] float _extrusion = 0.1f;
+    [SerializeField, Range(0, 1)] float _density = 0.05f;
+    [SerializeField, Range(0, 10)] float _scale = 3;
+
+    [SerializeField, Range(0, 20)] float _stretch = 5;
+    [SerializeField, Range(0, 1000)] float _fallDistance = 1;
+    [SerializeField, Range(0, 10)] float _fluctuation = 1;
+
     [SerializeField] Renderer[] _renderers;
 
     #endregion
 
     #region Utility properties for internal use
 
-    Vector4 EffectVector
+    Vector4 EffectorPlane
     {
         get
         {
@@ -42,8 +48,9 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
 
     static class ShaderIDs
     {
-        public static readonly int Extrusion = Shader.PropertyToID("_Extrusion");
-        public static readonly int Effector = Shader.PropertyToID("_Effector");
+        public static readonly int VoxelParams = Shader.PropertyToID("_VoxelParams");
+        public static readonly int AnimParams = Shader.PropertyToID("_AnimParams");
+        public static readonly int EffectorPlane = Shader.PropertyToID("_EffectorPlane");
         public static readonly int LocalTime = Shader.PropertyToID("_LocalTime");
     }
 
@@ -88,16 +95,20 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
 
         if (_sheet == null) _sheet = new MaterialPropertyBlock();
 
-        var evector = EffectVector;
-        var ltime = LocalTime;
+        var plane = EffectorPlane;
+        var time = LocalTime;
+
+        var vparams = new Vector2(_density, _scale);
+        var aparams = new Vector3(_stretch, _fallDistance, _fluctuation);
 
         foreach (var renderer in _renderers)
         {
             if (renderer == null) continue;
             renderer.GetPropertyBlock(_sheet);
-            _sheet.SetFloat(ShaderIDs.Extrusion, _extrusion);
-            _sheet.SetVector(ShaderIDs.Effector, evector);
-            _sheet.SetFloat(ShaderIDs.LocalTime, ltime);
+            _sheet.SetVector(ShaderIDs.VoxelParams, vparams);
+            _sheet.SetVector(ShaderIDs.AnimParams, aparams);
+            _sheet.SetVector(ShaderIDs.EffectorPlane, plane);
+            _sheet.SetFloat(ShaderIDs.LocalTime, time);
             renderer.SetPropertyBlock(_sheet);
         }
     }

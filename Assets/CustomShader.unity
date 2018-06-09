@@ -849,7 +849,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f04a2787be75de041ac1bf2134a671ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _extrusion: 0.02
+  _density: 0.077
+  _scale: 3
+  _stretch: 17.1
+  _fallDistance: 483
+  _fluctuation: 1
   _renderers:
   - {fileID: 1345559284}
 --- !u!4 &2015354182

@@ -5,12 +5,23 @@ using UnityEditorInternal;
 [CustomEditor(typeof(Voxelizer))]
 sealed class VoxelizerEditor : Editor
 {
-    SerializedProperty _extrusion;
+    SerializedProperty _density;
+    SerializedProperty _scale;
+
+    SerializedProperty _stretch;
+    SerializedProperty _fallDistance;
+    SerializedProperty _fluctuation;
+
     ReorderableList _renderers;
 
     void OnEnable()
     {
-        _extrusion = serializedObject.FindProperty("_extrusion");
+        _density = serializedObject.FindProperty("_density");
+        _scale = serializedObject.FindProperty("_scale");
+
+        _stretch = serializedObject.FindProperty("_stretch");
+        _fallDistance = serializedObject.FindProperty("_fallDistance");
+        _fluctuation = serializedObject.FindProperty("_fluctuation");
 
         _renderers = new ReorderableList(
             serializedObject,
@@ -38,8 +49,21 @@ sealed class VoxelizerEditor : Editor
     {
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(_extrusion);
+        EditorGUILayout.LabelField("Voxel Parameters");
+        EditorGUI.indentLevel++;
+        EditorGUILayout.PropertyField(_density);
+        EditorGUILayout.PropertyField(_scale);
+        EditorGUI.indentLevel--;
+
+        EditorGUILayout.LabelField("Animation Parameters");
+        EditorGUI.indentLevel++;
+        EditorGUILayout.PropertyField(_stretch);
+        EditorGUILayout.PropertyField(_fallDistance);
+        EditorGUILayout.PropertyField(_fluctuation);
+        EditorGUI.indentLevel--;
+
         _renderers.DoLayoutList();
+
         EditorGUILayout.Space();
 
         serializedObject.ApplyModifiedProperties();

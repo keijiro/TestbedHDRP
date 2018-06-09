@@ -1,8 +1,9 @@
 #include "SimplexNoise3D.hlsl"
 #include "Utilities.hlsl"
 
-half _Extrusion;
-float4 _Effector;
+half2 _VoxelParams; // density, scale
+half3 _AnimParams;  // stretch, fall distance, fluctuation
+float4 _EffectorPlane;
 float _LocalTime;
 
 float3 ConstructNormal(float3 v1, float3 v2, float3 v3)
@@ -45,6 +46,13 @@ void Geom(
     inout TriangleStream<PackedVaryingsMeshToPS> outStream
 )
 {
+    // Parameter extraction
+    const float VoxelDensity = _VoxelParams.x;
+    const float VoxelScale = _VoxelParams.y;
+    const float Stretch = _AnimParams.x;
+    const float FallDist = _AnimParams.y;
+    const float Fluctuation = _AnimParams.z;
+
     // Input vertices
     AttributesMesh v0 = ConvertToAttributesMesh(input[0]);
     AttributesMesh v1 = ConvertToAttributesMesh(input[1]);
@@ -65,9 +73,11 @@ void Geom(
 #endif
 
     float3 center = (p0 + p1 + p2) / 3;
+    float size = distance(p0, center);
 
     // Deformation parameter
-    float param = 1 - dot(_Effector.xyz, TransformObjectToWorld(center)) + _Effector.w;
+    float param = dot(_EffectorPlane.xyz, TransformObjectToWorld(center));
+    param = 1 - param + _EffectorPlane.w;
 
     // Pass through the vertices if deformation hasn't been started yet.
     if (param < 0)
@@ -84,7 +94,7 @@ void Geom(
 
     // Choose cube/triangle randomly.
     uint seed = pid * 877;
-    if (Hash(seed) < 0.05)
+    if (Hash(seed) < VoxelDensity)
     {
         // -- Cube --
 
@@ -97,12 +107,12 @@ void Geom(
         move = move * move;
 
         // Cube position
-        float3 pos = center + snoise.xyz * 0.02;
-        pos.y += move * random;
+        float3 pos = center + snoise.xyz * size * Fluctuation;
+        pos.y += move * move * lerp(0.25, 1, random) * size * FallDist;
 
         // Cube scale anim
-        float3 scale = float2(1 - move, 1 + move * 5).xyx;
-        scale *= 0.05 * saturate(1 + snoise.w * 2);
+        float3 scale = float2(1 - move, 1 + move * Stretch).xyx;
+        scale *= size * VoxelScale * saturate(1 + snoise.w * 2);
 
         // Edge color (emission power)
         float edge = saturate(param * 5);
@@ -165,38 +175,15 @@ void Geom(
     {
         // -- Triangle --
 
-        float ss_param = smoothstep(0, 1, param);
-
-        // Random motion
-        float3 move = RandomInsideSphere(seed + 1) * ss_param * 0.5;
-
-        // Random rotation
-        float3 rot_angles = (RandomInsideCube(seed + 4) - 0.5) * 100;
-        float3x3 rot_m = Euler3x3(rot_angles * ss_param);
-
-        // Simple shrink
-        float scale = 1 - ss_param;
-
-        // Apply the animation.
-        float3 t_p0 = mul(rot_m, p0 - center) * scale + center + move;
-        float3 t_p1 = mul(rot_m, p1 - center) * scale + center + move;
-        float3 t_p2 = mul(rot_m, p2 - center) * scale + center + move;
-        float3 normal = normalize(cross(t_p1 - t_p0, t_p2 - t_p0));
+        float ss_param = smoothstep(0.2, 0.3, param);
 
         // Edge color (emission power) animation
         float edge = smoothstep(0, 0.1, param); // ease-in
         edge *= 1 + 20 * smoothstep(0, 0.1, 0.1 - param); // peak -> release
 
-        // Vertex outputs (front face)
-        outStream.Append(TriangleVertex(v0, t_p0, normal, float3(1, 0, 0), edge));
-        outStream.Append(TriangleVertex(v1, t_p1, normal, float3(0, 1, 0), edge));
-        outStream.Append(TriangleVertex(v2, t_p2, normal, float3(0, 0, 1), edge));
-        outStream.RestartStrip();
-
-        // Vertex outputs (back face)
-        outStream.Append(TriangleVertex(v0, t_p0, -normal, float3(1, 0, 0), edge));
-        outStream.Append(TriangleVertex(v2, t_p2, -normal, float3(0, 0, 1), edge));
-        outStream.Append(TriangleVertex(v1, t_p1, -normal, float3(0, 1, 0), edge));
+        outStream.Append(TriangleVertex(v0, lerp(p0, center, ss_param), n0, float3(1, 0, 0), edge));
+        outStream.Append(TriangleVertex(v1, lerp(p1, center, ss_param), n1, float3(0, 1, 0), edge));
+        outStream.Append(TriangleVertex(v2, lerp(p2, center, ss_param), n2, float3(0, 0, 1), edge));
         outStream.RestartStrip();
     }
 }

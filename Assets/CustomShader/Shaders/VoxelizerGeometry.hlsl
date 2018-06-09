@@ -5,13 +5,13 @@ float _LocalTime;
 
 PackedVaryingsMeshToPS VertexOutput(
     AttributesMesh source,
-    float3 position, half3 normal,
+    float3 position0, float3 position1, half3 normal0, half3 normal1, half param,
     half emission = 0, half random = 0, half2 baryCoord = 0.5
 )
 {
-    source.positionOS = position;
+    source.positionOS = lerp(position0, position1, param);
 #ifdef ATTRIBUTES_NEED_NORMAL
-    source.normalOS = normal;
+    source.normalOS = normalize(lerp(normal0, normal1, param));
 #endif
 #ifdef ATTRIBUTES_NEED_COLOR
     source.color = half4(baryCoord, emission, random);
@@ -19,20 +19,9 @@ PackedVaryingsMeshToPS VertexOutput(
     return PackVaryingsMeshToPS(VertMesh(source));
 }
 
-PackedVaryingsMeshToPS CubeVertexOutput(
-    AttributesMesh source,
-    float3 position, half3 normal0, half3 normal1, half normalParam,
-    half emission, half random, half2 baryCoord
-)
-{
-    half3 normal = normalize(lerp(normal0, normal1, normalParam));
-    return VertexOutput(source, position, normal, emission, random, baryCoord);
-}
-
 [maxvertexcount(24)]
 void VoxelizerGeometry(
-    triangle Attributes input[3],
-    uint pid : SV_PrimitiveID,
+    triangle Attributes input[3], uint pid : SV_PrimitiveID,
     inout TriangleStream<PackedVaryingsMeshToPS> outStream
 )
 {
@@ -72,9 +61,9 @@ void VoxelizerGeometry(
     // Pass through the vertices if deformation hasn't been started yet.
     if (param < 0)
     {
-        outStream.Append(VertexOutput(v0, p0, n0));
-        outStream.Append(VertexOutput(v1, p1, n1));
-        outStream.Append(VertexOutput(v2, p2, n2));
+        outStream.Append(VertexOutput(v0, p0, 0, n0, 0, 0));
+        outStream.Append(VertexOutput(v1, p1, 0, n1, 0, 0));
+        outStream.Append(VertexOutput(v2, p2, 0, n2, 0, 0));
         outStream.RestartStrip();
         return;
     }
@@ -88,9 +77,12 @@ void VoxelizerGeometry(
     {
         // -- Cube --
 
-        // Random number, noise field
-        float random = Hash(seed + 1);
-        float4 snoise = snoise_grad(float3(random * 2378.34, param * 0.8, 0));
+        // Random numbers
+        float rand1 = Hash(seed + 1);
+        float rand2 = Hash(seed + 5);
+
+        // Noise field
+        float4 snoise = snoise_grad(float3(rand1 * 2378.34, param * 0.8, 0));
 
         // Stretch/move param
         float move = saturate(param * 4 - 3);
@@ -98,77 +90,79 @@ void VoxelizerGeometry(
 
         // Cube position
         float3 pos = center + snoise.xyz * size * Fluctuation;
-        pos.y += move * move * lerp(0.25, 1, random) * size * FallDist;
+        pos.y += move * move * lerp(0.25, 1, rand1) * size * FallDist;
 
         // Cube scale anim
         float3 scale = float2(1 - move, 1 + move * Stretch).xyx;
         scale *= size * VoxelScale * saturate(1 + snoise.w * 2);
 
-        // Edge color (emission power)
-        float edge = saturate(param * 5);
-        float random2 = Hash(seed + 20000);
+        // Secondary animation parameters
+        float morph = smoothstep(0, 0.25, param);
+        float em = smoothstep(0, 0.15, param) * 2; // initial emission
+        em = min(em, 1 + smoothstep(0.8, 0.9, 1 - param));
+        em += smoothstep(0.75, 1, param); // emission while falling
 
         // Cube points calculation
-        float morph = smoothstep(0, 0.25, param);
-        float3 c_p0 = lerp(p2, pos + float3(-1, -1, -1) * scale, morph);
-        float3 c_p1 = lerp(p2, pos + float3(+1, -1, -1) * scale, morph);
-        float3 c_p2 = lerp(p0, pos + float3(-1, +1, -1) * scale, morph);
-        float3 c_p3 = lerp(p1, pos + float3(+1, +1, -1) * scale, morph);
-        float3 c_p4 = lerp(p2, pos + float3(-1, -1, +1) * scale, morph);
-        float3 c_p5 = lerp(p2, pos + float3(+1, -1, +1) * scale, morph);
-        float3 c_p6 = lerp(p0, pos + float3(-1, +1, +1) * scale, morph);
-        float3 c_p7 = lerp(p1, pos + float3(+1, +1, +1) * scale, morph);
+        float3 pc0 = pos + float3(-1, -1, -1) * scale;
+        float3 pc1 = pos + float3(+1, -1, -1) * scale;
+        float3 pc2 = pos + float3(-1, +1, -1) * scale;
+        float3 pc3 = pos + float3(+1, +1, -1) * scale;
+        float3 pc4 = pos + float3(-1, -1, +1) * scale;
+        float3 pc5 = pos + float3(+1, -1, +1) * scale;
+        float3 pc6 = pos + float3(-1, +1, +1) * scale;
+        float3 pc7 = pos + float3(+1, +1, +1) * scale;
 
         // Vertex outputs
-        float3 c_n = float3(-1, 0, 0);
-        outStream.Append(CubeVertexOutput(v0, c_p2, n0, c_n, morph, edge, random2, float2(0, 0)));
-        outStream.Append(CubeVertexOutput(v2, c_p0, n2, c_n, morph, edge, random2, float2(1, 0)));
-        outStream.Append(CubeVertexOutput(v0, c_p6, n0, c_n, morph, edge, random2, float2(0, 1)));
-        outStream.Append(CubeVertexOutput(v2, c_p4, n2, c_n, morph, edge, random2, float2(1, 1)));
+        float3 nc = float3(-1, 0, 0);
+        outStream.Append(VertexOutput(v0, p0, pc2, n0, nc, morph, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc0, n2, nc, morph, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v0, p0, pc6, n0, nc, morph, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc4, n2, nc, morph, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        c_n = float3(1, 0, 0);
-        outStream.Append(CubeVertexOutput(v2, c_p1, n2, c_n, morph, edge, random2, float2(0, 0)));
-        outStream.Append(CubeVertexOutput(v1, c_p3, n1, c_n, morph, edge, random2, float2(1, 0)));
-        outStream.Append(CubeVertexOutput(v2, c_p5, n2, c_n, morph, edge, random2, float2(0, 1)));
-        outStream.Append(CubeVertexOutput(v1, c_p7, n1, c_n, morph, edge, random2, float2(1, 1)));
+        nc = float3(1, 0, 0);
+        outStream.Append(VertexOutput(v2, p2, pc1, n2, nc, morph, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v1, p1, pc3, n1, nc, morph, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc5, n2, nc, morph, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v1, p1, pc7, n1, nc, morph, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        c_n = float3(0, -1, 0);
-        outStream.Append(CubeVertexOutput(v2, c_p0, n2, c_n, morph, edge, random2, float2(0, 0)));
-        outStream.Append(CubeVertexOutput(v2, c_p1, n2, c_n, morph, edge, random2, float2(1, 0)));
-        outStream.Append(CubeVertexOutput(v2, c_p4, n2, c_n, morph, edge, random2, float2(0, 1)));
-        outStream.Append(CubeVertexOutput(v2, c_p5, n2, c_n, morph, edge, random2, float2(1, 1)));
+        nc = float3(0, -1, 0);
+        outStream.Append(VertexOutput(v2, p2, pc0, n2, nc, morph, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc1, n2, nc, morph, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc4, n2, nc, morph, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc5, n2, nc, morph, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        c_n = float3(0, 1, 0);
-        outStream.Append(CubeVertexOutput(v1, c_p3, n1, c_n, morph, edge, random2, float2(0, 0)));
-        outStream.Append(CubeVertexOutput(v0, c_p2, n0, c_n, morph, edge, random2, float2(1, 0)));
-        outStream.Append(CubeVertexOutput(v1, c_p7, n1, c_n, morph, edge, random2, float2(0, 1)));
-        outStream.Append(CubeVertexOutput(v0, c_p6, n0, c_n, morph, edge, random2, float2(1, 1)));
+        nc = float3(0, 1, 0);
+        outStream.Append(VertexOutput(v1, p1, pc3, n1, nc, morph, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v0, p0, pc2, n0, nc, morph, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v1, p1, pc7, n1, nc, morph, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v0, p0, pc6, n0, nc, morph, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        c_n = float3(0, 0, -1);
-        outStream.Append(CubeVertexOutput(v2, c_p1, n2, c_n, morph, edge, random2, float2(0, 0)));
-        outStream.Append(CubeVertexOutput(v2, c_p0, n2, c_n, morph, edge, random2, float2(1, 0)));
-        outStream.Append(CubeVertexOutput(v1, c_p3, n1, c_n, morph, edge, random2, float2(0, 1)));
-        outStream.Append(CubeVertexOutput(v0, c_p2, n0, c_n, morph, edge, random2, float2(1, 1)));
+        nc = float3(0, 0, -1);
+        outStream.Append(VertexOutput(v2, p2, pc1, n2, nc, morph, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc0, n2, nc, morph, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v1, p1, pc3, n1, nc, morph, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v0, p0, pc2, n0, nc, morph, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        c_n = float3(0, 0, 1);
-        outStream.Append(CubeVertexOutput(v2, c_p4, -n2, c_n, morph, edge, random2, float2(0, 0)));
-        outStream.Append(CubeVertexOutput(v2, c_p5, -n2, c_n, morph, edge, random2, float2(1, 0)));
-        outStream.Append(CubeVertexOutput(v0, c_p6, -n0, c_n, morph, edge, random2, float2(0, 1)));
-        outStream.Append(CubeVertexOutput(v1, c_p7, -n1, c_n, morph, edge, random2, float2(1, 1)));
+        nc = float3(0, 0, 1);
+        outStream.Append(VertexOutput(v2, p2, pc4, -n2, nc, morph, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc5, -n2, nc, morph, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v0, p0, pc6, -n0, nc, morph, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v1, p1, pc7, -n1, nc, morph, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
     }
     else
     {
         // -- Triangle --
-        half param2 = smoothstep(0.2, 0.3, param);
-        outStream.Append(VertexOutput(v0, lerp(p0, center, param2), n0, param2));
-        outStream.Append(VertexOutput(v1, lerp(p1, center, param2), n1, param2));
-        outStream.Append(VertexOutput(v2, lerp(p2, center, param2), n2, param2));
+        half morph = smoothstep(0, 0.25, param);
+        half em = smoothstep(0, 0.15, param) * 2;
+        outStream.Append(VertexOutput(v0, p0, center, n0, n0, morph, em));
+        outStream.Append(VertexOutput(v1, p1, center, n1, n1, morph, em));
+        outStream.Append(VertexOutput(v2, p2, center, n2, n2, morph, em));
         outStream.RestartStrip();
     }
 }

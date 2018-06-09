@@ -805,6 +805,8 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 114961435642475592, guid: c21a4ebdf4084fc43b9dd01fd4dd5c8e, type: 2}
     value: {fileID: 2015354180}
+  - key: {fileID: 0}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - 96846f2fcec5c284b8efdd3973bbf7c5: {fileID: 2015354180}
@@ -849,11 +851,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f04a2787be75de041ac1bf2134a671ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _density: 0.077
-  _scale: 3
-  _stretch: 17.1
-  _fallDistance: 483
+  _density: 0.08
+  _scale: 2.2
+  _stretch: 16
+  _fallDistance: 260
   _fluctuation: 1
+  _emissionColor1: {r: 0.054117557, g: 0, b: 1.9766746, a: 0}
+  _emissionColor2: {r: 0, g: 0.55616087, b: 3.732132, a: 0}
+  _transitionColor: {r: 1.0515512, g: 1.0515512, b: 1.0515512, a: 0}
+  _lineColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
   _renderers:
   - {fileID: 1345559284}
 --- !u!4 &2015354182

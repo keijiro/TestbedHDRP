@@ -1,17 +1,32 @@
+half4 _EmissionHsvm1;
+half4 _EmissionHsvm2;
+half3 _TransitionColor;
+half3 _LineColor;
+
 half3 SelfEmission(FragInputs input)
 {
     half2 bcc = input.color.rg;
-    half em = input.color.b;
-    half hue = input.color.a;
+    half em1 = saturate(input.color.b);
+    half em2 = saturate(input.color.b - 1);
+    half rand = input.color.a;
 
-    float2 fw = fwidth(bcc);
-    float2 edge2 = min(smoothstep(0, fw * 2,     bcc),
-                       smoothstep(0, fw * 2, 1 - bcc));
-    float edge = 1 - min(edge2.x, edge2.y);
+    // Cube face color
+    half3 face = HsvToRgb(lerp(_EmissionHsvm1.xyz, _EmissionHsvm2.xyz, rand));
+    face *= lerp(_EmissionHsvm1.w, _EmissionHsvm2.w, rand);
 
-    float face = 0.1 * (1 + smoothstep(0, 0.5, length(bcc - 0.5)));
+    // Cube face attenuation
+    face *= lerp(0.75, 1, smoothstep(0, 0.5, length(bcc - 0.5)));
 
-    return (edge * half3(1, 0.8, 0.2) * 0.04 + HsvToRgb(half3(0.5 + 0.2 * hue, 1, 1))*face * half3(0.2, 0.2, 1)) * em*8;
+    // Edge detection
+    half2 fw = fwidth(bcc);
+    half2 edge2 = min(smoothstep(0, fw * 2,     bcc),
+                      smoothstep(0, fw * 2, 1 - bcc));
+    half edge = 1 - min(edge2.x, edge2.y);
+
+    return
+        face * em1*1 +
+        _TransitionColor * em2 * face +
+        edge * _LineColor * em1;
 }
 
 //

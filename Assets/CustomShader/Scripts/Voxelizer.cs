@@ -15,11 +15,16 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField, Range(0, 1000)] float _fallDistance = 1;
     [SerializeField, Range(0, 10)] float _fluctuation = 1;
 
+    [SerializeField, ColorUsage(false, true)] Color _emissionColor1;
+    [SerializeField, ColorUsage(false, true)] Color _emissionColor2;
+    [SerializeField, ColorUsage(false, true)] Color _transitionColor;
+    [SerializeField, ColorUsage(false, true)] Color _lineColor;
+
     [SerializeField] Renderer[] _renderers;
 
     #endregion
 
-    #region Utility properties for internal use
+    #region Utility properties and methods for internal use
 
     Vector4 EffectorPlane
     {
@@ -42,6 +47,14 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
         }
     }
 
+    Vector4 ColorToHsvm(Color color)
+    {
+        var max = color.maxColorComponent;
+        float h, s, v;
+        Color.RGBToHSV(color / max, out h, out s, out v);
+        return new Vector4(h, s, v, max);
+    }
+
     #endregion
 
     #region Shader property IDs
@@ -50,6 +63,10 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
     {
         public static readonly int VoxelParams = Shader.PropertyToID("_VoxelParams");
         public static readonly int AnimParams = Shader.PropertyToID("_AnimParams");
+        public static readonly int EmissionHsvm1 = Shader.PropertyToID("_EmissionHsvm1");
+        public static readonly int EmissionHsvm2 = Shader.PropertyToID("_EmissionHsvm2");
+        public static readonly int TransitionColor = Shader.PropertyToID("_TransitionColor");
+        public static readonly int LineColor = Shader.PropertyToID("_LineColor");
         public static readonly int EffectorPlane = Shader.PropertyToID("_EffectorPlane");
         public static readonly int LocalTime = Shader.PropertyToID("_LocalTime");
     }
@@ -100,6 +117,8 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
 
         var vparams = new Vector2(_density, _scale);
         var aparams = new Vector3(_stretch, _fallDistance, _fluctuation);
+        var emission1 = ColorToHsvm(_emissionColor1);
+        var emission2 = ColorToHsvm(_emissionColor2);
 
         foreach (var renderer in _renderers)
         {
@@ -107,6 +126,10 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
             renderer.GetPropertyBlock(_sheet);
             _sheet.SetVector(ShaderIDs.VoxelParams, vparams);
             _sheet.SetVector(ShaderIDs.AnimParams, aparams);
+            _sheet.SetVector(ShaderIDs.EmissionHsvm1, emission1);
+            _sheet.SetVector(ShaderIDs.EmissionHsvm2, emission2);
+            _sheet.SetColor(ShaderIDs.TransitionColor, _transitionColor);
+            _sheet.SetColor(ShaderIDs.LineColor, _lineColor);
             _sheet.SetVector(ShaderIDs.EffectorPlane, plane);
             _sheet.SetFloat(ShaderIDs.LocalTime, time);
             renderer.SetPropertyBlock(_sheet);

@@ -302,10 +302,9 @@ Shader "Voxelizer"
     #include "HDRP/Material/Lit/LitProperties.hlsl"
 
     // All our shaders use same name for entry point
-    // Custom: Disabling vertex shader and enabling the custom geometry shader.
-    #pragma vertex VertNull
-    #pragma geometry Geom
-    #pragma fragment Frag
+    // Custom: No. We use different names.
+    //#pragma vertex Vert
+    //#pragma fragment Frag
 
     ENDHLSL
 
@@ -355,8 +354,15 @@ Shader "Voxelizer"
             #include "HDRP/Material/Lit/LitData.hlsl"
             #include "HDRP/ShaderPass/ShaderPassGBuffer.hlsl"
 
-            // Custom: Geometry shader implementation
-            #include "Geometry.hlsl"
+            // Custom: Geometry and fragment shader implementation
+            #include "VoxelizerCommon.hlsl"
+            #include "VoxelizerGeometry.hlsl"
+            #include "VoxelizerFragment.hlsl"
+
+            // Custom: Shader entry points
+            #pragma vertex VertexThru
+            #pragma geometry VoxelizerGeometry
+            #pragma fragment VoxelizerFragment
 
             ENDHLSL
         }
@@ -388,7 +394,13 @@ Shader "Voxelizer"
             #include "HDRP/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
-            #include "Geometry.hlsl"
+            #include "VoxelizerCommon.hlsl"
+            #include "VoxelizerGeometry.hlsl"
+
+            // Custom: Shader entry points
+            #pragma vertex VertexThru
+            #pragma geometry VoxelizerGeometry
+            #pragma fragment Frag
 
             ENDHLSL
         }

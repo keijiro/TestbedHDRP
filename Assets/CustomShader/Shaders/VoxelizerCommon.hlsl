@@ -1,3 +1,5 @@
+#include "SimplexNoise3D.hlsl"
+
 // Random vector generators
 
 float3 RandomOnSphere(uint seed)
@@ -94,6 +96,6 @@ AttributesMesh ConvertToAttributesMesh(Attributes input)
     return am;
 }
 
-// Empty vertex shader
+// Thru vertex shader
 // We do all the vertex calculations in the geometry shader.
-void VertNull(inout Attributes input) {}
+void VertexThru(inout Attributes input) {}

@@ -216,7 +216,18 @@ MonoBehaviour:
   _verticesPerSegment: 3
   _radius: 0.75
   _material: {fileID: 2100000, guid: 23e18b9e57a3b17408ee8c7ec3e5fab0, type: 2}
-  _lissajous: {x: 7.11, y: 5.53, z: 6.75}
+  _lissajous:
+    x: 7.11
+    y: 5.53
+    z: 6.75
+  _palette1:
+    x: 0.118
+    y: 0.138
+    z: 0.127
+  _palette2:
+    x: 1.231
+    y: 1.321
+    z: 1.115
   _noiseFrequency: 0.3
   _noiseMotion: 0.2
   _noiseAmplitude: 0.03
@@ -383,7 +394,7 @@ MonoBehaviour:
   version: 1
   directionalIntensity: 3.1415927
   punctualIntensity: 600
-  areaIntensity: 1.8
+  areaIntensity: 1.3
   enableSpotReflector: 0
   m_InnerSpotPercent: 0
   lightDimmer: 1
@@ -413,7 +424,7 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.28647888
+  m_Intensity: 0.20690142
   m_Range: 3
   m_SpotAngle: 30
   m_CookieSize: 10

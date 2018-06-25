@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "com.unity.mathematics": "0.0.12-preview.8",
-    "com.unity.package-manager-ui": "1.9.10",
-    "com.unity.render-pipelines.high-definition": "2.0.3-preview",
+    "com.unity.package-manager-ui": "1.9.11",
+    "com.unity.render-pipelines.high-definition": "2.0.4-preview",
     "com.unity.modules.director": "1.0.0",
     "com.unity.modules.imgui": "1.0.0",
     "com.unity.modules.physics": "1.0.0",

@@ -3,7 +3,7 @@ half3 _AnimParams;  // stretch, fall distance, fluctuation
 float4 _EffectorPlane;
 float _LocalTime;
 
-PackedVaryingsMeshToPS VertexOutput(
+PackedVaryingsType VertexOutput(
     AttributesMesh source,
     float3 position0, float3 position1, half3 normal0, half3 normal1, half param,
     half emission = 0, half random = 0, half2 baryCoord = 0.5
@@ -16,13 +16,13 @@ PackedVaryingsMeshToPS VertexOutput(
 #ifdef ATTRIBUTES_NEED_COLOR
     source.color = half4(baryCoord, emission, random);
 #endif
-    return PackVaryingsMeshToPS(VertMesh(source));
+    return Vert(source);
 }
 
 [maxvertexcount(24)]
 void VoxelizerGeometry(
     triangle Attributes input[3], uint pid : SV_PrimitiveID,
-    inout TriangleStream<PackedVaryingsMeshToPS> outStream
+    inout TriangleStream<PackedVaryingsType> outStream
 )
 {
     // Parameter extraction

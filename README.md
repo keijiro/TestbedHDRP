@@ -24,11 +24,8 @@ This repository includes some [submodules]. Before opening the project with
 Unity, not only the repository itself but also these submodules have to be
 synced up.
 
-If you're using Git from the command line, run `git submodule init` and
-`git submodule update` in the project directory. Or you can just use the
-`--recursive` option when initially cloning the repository.
-
-If you're using a Git GUI client, please refer to the manual for information
-about submodules.
+If you're using Git from the command line, please run `git submodule init` and
+`git submodule update` in the project directory to sync the submodules. Or you
+can just use the `--recursive` option when initially cloning the repository.
 
 [submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules

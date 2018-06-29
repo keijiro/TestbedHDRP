@@ -1,11 +1,13 @@
 half2 _VoxelParams; // density, scale
 half3 _AnimParams;  // stretch, fall distance, fluctuation
 float4 _EffectorPlane;
+float4 _PrevEffectorPlane;
 float _LocalTime;
 
 PackedVaryingsType VertexOutput(
     AttributesMesh source,
-    float3 position0, float3 position1, half3 normal0, half3 normal1, half param,
+    float3 position0, float3 position1, float3 position0_prev, float3 position1_prev,
+    half3 normal0, half3 normal1, half param, half param_prev,
     half emission = 0, half random = 0, half2 baryCoord = 0.5
 )
 {
@@ -16,7 +18,13 @@ PackedVaryingsType VertexOutput(
 #ifdef ATTRIBUTES_NEED_COLOR
     source.color = half4(baryCoord, emission, random);
 #endif
+#if SHADERPASS == SHADERPASS_VELOCITY
+    AttributesPass attrib;
+    attrib.previousPositionOS = lerp(position0_prev, position1_prev, param_prev);
+    return Vert(source, attrib);
+#else
     return Vert(source);
+#endif
 }
 
 // Calculates a cube position and scale.
@@ -63,6 +71,17 @@ void VoxelizerGeometry(
     float3 p1 = v1.positionOS;
     float3 p2 = v2.positionOS;
 
+#if SHADERPASS == SHADERPASS_VELOCITY
+    bool hasDeformation = unity_MotionVectorsParams.x > 0.0;
+    float3 p0_prev = hasDeformation ? input[0].previousPositionOS : p0;
+    float3 p1_prev = hasDeformation ? input[1].previousPositionOS : p1;
+    float3 p2_prev = hasDeformation ? input[2].previousPositionOS : p2;
+#else
+    float3 p0_prev = p0;
+    float3 p1_prev = p1;
+    float3 p2_prev = p2;
+#endif
+
 #ifdef ATTRIBUTES_NEED_NORMAL
     float3 n0 = v0.normalOS;
     float3 n1 = v1.normalOS;
@@ -76,16 +95,20 @@ void VoxelizerGeometry(
     float3 center = (p0 + p1 + p2) / 3;
     float size = distance(p0, center);
 
+    float3 center_prev = (p0_prev + p1_prev + p2_prev) / 3;
+
     // Deformation parameter
     float param = dot(_EffectorPlane.xyz, TransformObjectToWorld(center));
     param = 1 - param + _EffectorPlane.w;
 
+    float param_prev = param - _EffectorPlane.w + _PrevEffectorPlane.w;
+
     // Pass through the vertices if deformation hasn't been started yet.
     if (param < 0)
     {
-        outStream.Append(VertexOutput(v0, p0, 0, n0, 0, 0));
-        outStream.Append(VertexOutput(v1, p1, 0, n1, 0, 0));
-        outStream.Append(VertexOutput(v2, p2, 0, n2, 0, 0));
+        outStream.Append(VertexOutput(v0, p0, 0, p0_prev, 0, n0, 0, 0, 0));
+        outStream.Append(VertexOutput(v1, p1, 0, p1_prev, 0, n1, 0, 0, 0));
+        outStream.Append(VertexOutput(v2, p2, 0, p2_prev, 0, n2, 0, 0, 0));
         outStream.RestartStrip();
         return;
     }
@@ -106,9 +129,12 @@ void VoxelizerGeometry(
         // Cube position and scale
         float3 pos, pos_prev, scale, scale_prev;
         CubePosScale(center, size, rand1, param, pos, scale);
+        CubePosScale(center_prev, size, rand1, param_prev, pos_prev, scale_prev);
 
         // Secondary animation parameters
         float morph = smoothstep(0, 0.25, param);
+        float morph_prev = smoothstep(0, 0.25, param_prev);
+
         float em = smoothstep(0, 0.15, param) * 2; // initial emission
         em = min(em, 1 + smoothstep(0.8, 0.9, 1 - param));
         em += smoothstep(0.75, 1, param); // emission while falling
@@ -123,57 +149,67 @@ void VoxelizerGeometry(
         float3 pc6 = pos + float3(-1, +1, +1) * scale;
         float3 pc7 = pos + float3(+1, +1, +1) * scale;
 
+        float3 pc0_prev = pos_prev + float3(-1, -1, -1) * scale_prev;
+        float3 pc1_prev = pos_prev + float3(+1, -1, -1) * scale_prev;
+        float3 pc2_prev = pos_prev + float3(-1, +1, -1) * scale_prev;
+        float3 pc3_prev = pos_prev + float3(+1, +1, -1) * scale_prev;
+        float3 pc4_prev = pos_prev + float3(-1, -1, +1) * scale_prev;
+        float3 pc5_prev = pos_prev + float3(+1, -1, +1) * scale_prev;
+        float3 pc6_prev = pos_prev + float3(-1, +1, +1) * scale_prev;
+        float3 pc7_prev = pos_prev + float3(+1, +1, +1) * scale_prev;
+
         // Vertex outputs
         float3 nc = float3(-1, 0, 0);
-        outStream.Append(VertexOutput(v0, p0, pc2, n0, nc, morph, em, rand2, float2(0, 0)));
-        outStream.Append(VertexOutput(v2, p2, pc0, n2, nc, morph, em, rand2, float2(1, 0)));
-        outStream.Append(VertexOutput(v0, p0, pc6, n0, nc, morph, em, rand2, float2(0, 1)));
-        outStream.Append(VertexOutput(v2, p2, pc4, n2, nc, morph, em, rand2, float2(1, 1)));
+        outStream.Append(VertexOutput(v0, p0, pc2, p0_prev, pc2_prev, n0, nc, morph, morph_prev, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc0, p2_prev, pc0_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v0, p0, pc6, p0_prev, pc6_prev, n0, nc, morph, morph_prev, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc4, p2_prev, pc4_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
         nc = float3(1, 0, 0);
-        outStream.Append(VertexOutput(v2, p2, pc1, n2, nc, morph, em, rand2, float2(0, 0)));
-        outStream.Append(VertexOutput(v1, p1, pc3, n1, nc, morph, em, rand2, float2(1, 0)));
-        outStream.Append(VertexOutput(v2, p2, pc5, n2, nc, morph, em, rand2, float2(0, 1)));
-        outStream.Append(VertexOutput(v1, p1, pc7, n1, nc, morph, em, rand2, float2(1, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc1, p2_prev, pc1_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v1, p1, pc3, p1_prev, pc3_prev, n1, nc, morph, morph_prev, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc5, p2_prev, pc5_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v1, p1, pc7, p1_prev, pc7_prev, n1, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
         nc = float3(0, -1, 0);
-        outStream.Append(VertexOutput(v2, p2, pc0, n2, nc, morph, em, rand2, float2(0, 0)));
-        outStream.Append(VertexOutput(v2, p2, pc1, n2, nc, morph, em, rand2, float2(1, 0)));
-        outStream.Append(VertexOutput(v2, p2, pc4, n2, nc, morph, em, rand2, float2(0, 1)));
-        outStream.Append(VertexOutput(v2, p2, pc5, n2, nc, morph, em, rand2, float2(1, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc0, p2_prev, pc0_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc1, p2_prev, pc1_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc4, p2_prev, pc4_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc5, p2_prev, pc5_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
         nc = float3(0, 1, 0);
-        outStream.Append(VertexOutput(v1, p1, pc3, n1, nc, morph, em, rand2, float2(0, 0)));
-        outStream.Append(VertexOutput(v0, p0, pc2, n0, nc, morph, em, rand2, float2(1, 0)));
-        outStream.Append(VertexOutput(v1, p1, pc7, n1, nc, morph, em, rand2, float2(0, 1)));
-        outStream.Append(VertexOutput(v0, p0, pc6, n0, nc, morph, em, rand2, float2(1, 1)));
+        outStream.Append(VertexOutput(v1, p1, pc3, p1_prev, pc3_prev, n1, nc, morph, morph_prev, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v0, p0, pc2, p0_prev, pc2_prev, n0, nc, morph, morph_prev, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v1, p1, pc7, p1_prev, pc7_prev, n1, nc, morph, morph_prev, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v0, p0, pc6, p0_prev, pc6_prev, n0, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
         nc = float3(0, 0, -1);
-        outStream.Append(VertexOutput(v2, p2, pc1, n2, nc, morph, em, rand2, float2(0, 0)));
-        outStream.Append(VertexOutput(v2, p2, pc0, n2, nc, morph, em, rand2, float2(1, 0)));
-        outStream.Append(VertexOutput(v1, p1, pc3, n1, nc, morph, em, rand2, float2(0, 1)));
-        outStream.Append(VertexOutput(v0, p0, pc2, n0, nc, morph, em, rand2, float2(1, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc1, p2_prev, pc1_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc0, p2_prev, pc0_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v1, p1, pc3, p1_prev, pc3_prev, n1, nc, morph, morph_prev, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v0, p0, pc2, p0_prev, pc2_prev, n0, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
         nc = float3(0, 0, 1);
-        outStream.Append(VertexOutput(v2, p2, pc4, -n2, nc, morph, em, rand2, float2(0, 0)));
-        outStream.Append(VertexOutput(v2, p2, pc5, -n2, nc, morph, em, rand2, float2(1, 0)));
-        outStream.Append(VertexOutput(v0, p0, pc6, -n0, nc, morph, em, rand2, float2(0, 1)));
-        outStream.Append(VertexOutput(v1, p1, pc7, -n1, nc, morph, em, rand2, float2(1, 1)));
+        outStream.Append(VertexOutput(v2, p2, pc4, p2_prev, pc4_prev, -n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
+        outStream.Append(VertexOutput(v2, p2, pc5, p2_prev, pc5_prev, -n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
+        outStream.Append(VertexOutput(v0, p0, pc6, p0_prev, pc6_prev, -n0, nc, morph, morph_prev, em, rand2, float2(0, 1)));
+        outStream.Append(VertexOutput(v1, p1, pc7, p1_prev, pc7_prev, -n1, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
     }
     else
     {
         // -- Triangle --
         half morph = smoothstep(0, 0.25, param);
+        half morph_prev = smoothstep(0, 0.25, param_prev);
         half em = smoothstep(0, 0.15, param) * 2;
-        outStream.Append(VertexOutput(v0, p0, center, n0, n0, morph, em));
-        outStream.Append(VertexOutput(v1, p1, center, n1, n1, morph, em));
-        outStream.Append(VertexOutput(v2, p2, center, n2, n2, morph, em));
+        outStream.Append(VertexOutput(v0, p0, center, p0_prev, center_prev, n0, n0, morph, morph_prev, em));
+        outStream.Append(VertexOutput(v1, p1, center, p1_prev, center_prev, n1, n1, morph, morph_prev, em));
+        outStream.Append(VertexOutput(v2, p2, center, p2_prev, center_prev, n2, n2, morph, morph_prev, em));
         outStream.RestartStrip();
     }
 }

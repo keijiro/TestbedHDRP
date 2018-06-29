@@ -38,6 +38,7 @@ float3x3 Euler3x3(float3 v)
 // We have to redefine the attributes struct to change the type of positionOS
 // to float4; It's originally defined as float3 so that it emits the "Not all
 // elements of SV_Position were written" error when used in geometry shaders.
+// Also previousPositionOS is added for the motion vectors pass.
 
 struct Attributes
 {
@@ -59,6 +60,9 @@ struct Attributes
 #endif
 #ifdef ATTRIBUTES_NEED_TEXCOORD3
     float2 uv3          : TEXCOORD3;
+#endif
+#if SHADERPASS == SHADERPASS_VELOCITY
+    float3 previousPositionOS : TEXCOORD4; // Contain previous transform position (in case of skinning for example)
 #endif
 #ifdef ATTRIBUTES_NEED_COLOR
     float4 color        : COLOR;

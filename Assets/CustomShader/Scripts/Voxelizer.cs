@@ -68,6 +68,7 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
         public static readonly int TransitionColor = Shader.PropertyToID("_TransitionColor");
         public static readonly int LineColor = Shader.PropertyToID("_LineColor");
         public static readonly int EffectorPlane = Shader.PropertyToID("_EffectorPlane");
+        public static readonly int PrevEffectorPlane = Shader.PropertyToID("_PrevEffectorPlane");
         public static readonly int LocalTime = Shader.PropertyToID("_LocalTime");
     }
 
@@ -105,6 +106,7 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
     #region MonoBehaviour implementation
 
     MaterialPropertyBlock _sheet;
+    Vector4 _prevEffectorPlane = Vector3.one * 1e+5f;
 
     void LateUpdate()
     {
@@ -114,6 +116,9 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
 
         var plane = EffectorPlane;
         var time = LocalTime;
+
+        // Filter out large deltas.
+        if ((_prevEffectorPlane - plane).magnitude > 100) _prevEffectorPlane = plane;
 
         var vparams = new Vector2(_density, _scale);
         var aparams = new Vector3(_stretch, _fallDistance, _fluctuation);
@@ -131,9 +136,12 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
             _sheet.SetColor(ShaderIDs.TransitionColor, _transitionColor);
             _sheet.SetColor(ShaderIDs.LineColor, _lineColor);
             _sheet.SetVector(ShaderIDs.EffectorPlane, plane);
+            _sheet.SetVector(ShaderIDs.PrevEffectorPlane, _prevEffectorPlane);
             _sheet.SetFloat(ShaderIDs.LocalTime, time);
             renderer.SetPropertyBlock(_sheet);
         }
+
+        _prevEffectorPlane = plane;
     }
 
     #endregion

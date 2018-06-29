@@ -414,6 +414,53 @@ Shader "Voxelizer"
             ENDHLSL
         }
 
+        // Custom: Removed the DepthOnly pass
+
+        Pass
+        {
+            Name "Motion Vectors"
+            Tags{ "LightMode" = "MotionVectors" } // Caution, this need to be call like this to setup the correct parameters by C++ (legacy Unity)
+
+            // If velocity pass (motion vectors) is enabled we tag the stencil so it don't perform CameraMotionVelocity
+            Stencil
+            {
+                WriteMask [_StencilWriteMaskMV]
+                Ref [_StencilRefMV]
+                Comp Always
+                Pass Replace
+            }
+
+            Cull[_CullMode]
+
+            ZWrite On
+
+            HLSLPROGRAM
+
+            // Custom: File path normalization
+            #define SHADERPASS SHADERPASS_VELOCITY
+            #include "HDRP/ShaderVariables.hlsl"
+            #include "HDRP/Material/Material.hlsl"
+            #include "HDRP/Material/Lit/ShaderPass/LitVelocityPass.hlsl"
+            #include "HDRP/Material/Lit/LitData.hlsl"
+
+            // Custom: Force-replace on unity_MotionVectorsParams
+            // (hasLastPositionStream, forceNoMotion [0: no motion], s_bias)
+            #define unity_MotionVectorsParams float3(1, 1, -0.001)
+            #include "HDRP/ShaderPass/ShaderPassVelocity.hlsl"
+            #undef unity_MotionVectorsParams
+
+            // Custom: Geometry shader implementation
+            #include "VoxelizerCommon.hlsl"
+            #include "VoxelizerGeometry.hlsl"
+
+            // Custom: Shader entry points
+            #pragma vertex VertexThru
+            #pragma geometry VoxelizerGeometry
+            #pragma fragment Frag
+
+            ENDHLSL
+        }
+
         // Custom: Removed some other passes.
     }
 

@@ -147,7 +147,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   stopNaNPropagation: 1
-  antialiasingMode: 2
+  antialiasingMode: 3
   temporalAntialiasing:
     jitterSpread: 0.75
     sharpness: 0.25
@@ -849,6 +849,10 @@ PlayableDirector:
     value: {fileID: 2015354180}
   - key: {fileID: 0}
     value: {fileID: 0}
+  - key: {fileID: 0}
+    value: {fileID: 0}
+  - key: {fileID: 0}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - 96846f2fcec5c284b8efdd3973bbf7c5: {fileID: 2015354180}
@@ -894,14 +898,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _density: 0.08
-  _scale: 2.2
+  _scale: 2.4
   _stretch: 16
   _fallDistance: 260
   _fluctuation: 1
-  _emissionColor1: {r: 0.054117557, g: 0, b: 1.9766746, a: 0}
-  _emissionColor2: {r: 0, g: 0.55616087, b: 3.732132, a: 0}
-  _transitionColor: {r: 1.0515512, g: 1.0515512, b: 1.0515512, a: 0}
-  _lineColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
+  _emissionColor1: {r: 0.8773585, g: 0.0613014, b: 0, a: 0}
+  _emissionColor2: {r: 0.047169805, g: 0.016739804, b: 0, a: 0}
+  _transitionColor: {r: 4, g: 2.7137256, b: 0, a: 0}
+  _lineColor: {r: 0.43527526, g: 0.018795742, b: 0, a: 0}
   _renderers:
   - {fileID: 1345559284}
 --- !u!4 &2015354182

@@ -4,6 +4,9 @@ TestbedHDRP
 ![gif](https://i.imgur.com/2qlNtFC.gif)
 ![gif](https://i.imgur.com/K3k5ffi.gif)
 
+![gif](https://i.imgur.com/RQHKvIc.gif)
+![gif](https://i.imgur.com/89atwYZ.gif)
+
 This is a testbed project for [Unity HDRP] (High Definition Render Pipeline).
 It contains several scenes that aim to try out the new functionalities of HDRP.
 Please note that they're not necessarily useful nor showing right use of the

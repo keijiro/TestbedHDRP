@@ -19,18 +19,40 @@ PackedVaryingsType VertexOutput(
     return Vert(source);
 }
 
+// Calculates a cube position and scale.
+void CubePosScale(
+    float3 center, float size, float rand, float param,
+    out float3 pos, out float3 scale
+)
+{
+    const float VoxelScale = _VoxelParams.y;
+    const float Stretch = _AnimParams.x;
+    const float FallDist = _AnimParams.y;
+    const float Fluctuation = _AnimParams.z;
+
+    // Noise field
+    float4 snoise = snoise_grad(float3(rand * 2378.34, param * 0.8, 0));
+
+    // Stretch/move param
+    float move = saturate(param * 4 - 3);
+    move = move * move;
+
+    // Cube position
+    pos = center + snoise.xyz * size * Fluctuation;
+    pos.y += move * move * lerp(0.25, 1, rand) * size * FallDist;
+
+    // Cube scale anim
+    scale = float2(1 - move, 1 + move * Stretch).xyx;
+    scale *= size * VoxelScale * saturate(1 + snoise.w * 2);
+}
+
 [maxvertexcount(24)]
 void VoxelizerGeometry(
     triangle Attributes input[3], uint pid : SV_PrimitiveID,
     inout TriangleStream<PackedVaryingsType> outStream
 )
 {
-    // Parameter extraction
     const float VoxelDensity = _VoxelParams.x;
-    const float VoxelScale = _VoxelParams.y;
-    const float Stretch = _AnimParams.x;
-    const float FallDist = _AnimParams.y;
-    const float Fluctuation = _AnimParams.z;
 
     // Input vertices
     AttributesMesh v0 = ConvertToAttributesMesh(input[0]);
@@ -81,20 +103,9 @@ void VoxelizerGeometry(
         float rand1 = Hash(seed + 1);
         float rand2 = Hash(seed + 5);
 
-        // Noise field
-        float4 snoise = snoise_grad(float3(rand1 * 2378.34, param * 0.8, 0));
-
-        // Stretch/move param
-        float move = saturate(param * 4 - 3);
-        move = move * move;
-
-        // Cube position
-        float3 pos = center + snoise.xyz * size * Fluctuation;
-        pos.y += move * move * lerp(0.25, 1, rand1) * size * FallDist;
-
-        // Cube scale anim
-        float3 scale = float2(1 - move, 1 + move * Stretch).xyx;
-        scale *= size * VoxelScale * saturate(1 + snoise.w * 2);
+        // Cube position and scale
+        float3 pos, pos_prev, scale, scale_prev;
+        CubePosScale(center, size, rand1, param, pos, scale);
 
         // Secondary animation parameters
         float morph = smoothstep(0, 0.25, param);

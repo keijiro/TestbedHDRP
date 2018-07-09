@@ -1,9 +1,8 @@
-﻿//
-// Custom lit shader with geometry modification
+﻿// Transportation effect custom shader
+// https://github.com/keijiro/TestbedHDRP
 //
-// This is basically a slightly modified version of the HDRP Lit shader.
-// Search with "Custom:" to check modifications from the original shader.
-//
+// Most parts of this shader are simply copy-pasted from the HDRP Lit shader.
+// See "Custom:" for modifications from the original shader.
 
 Shader "Transporter"
 {

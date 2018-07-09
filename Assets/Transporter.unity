@@ -912,12 +912,14 @@ MonoBehaviour:
   _cellDensity: 0.05
   _cellSize: 0.08
   _origin: {fileID: 0}
+  _inflation: 1.6
   _swirl: 2
   _scatter: 4
   _emissionColor: {r: 3.3686013, g: 2.0168583, b: 1.0405626, a: 0}
   _edgeColor: {r: 4.5412054, g: 2.6830873, b: 0, a: 0}
   _edgeWidth: 1
   _hueShift: 0.015
+  _highlight: 0.15
   _renderers:
   - {fileID: 1345559284}
 --- !u!4 &2015354182
@@ -928,7 +930,7 @@ Transform:
   m_GameObject: {fileID: 2015354180}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4

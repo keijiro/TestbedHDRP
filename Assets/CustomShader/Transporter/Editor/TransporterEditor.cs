@@ -9,6 +9,7 @@ sealed class TransporterEditor : Editor
     SerializedProperty _cellSize;
 
     SerializedProperty _origin;
+    SerializedProperty _inflation;
     SerializedProperty _swirl;
     SerializedProperty _scatter;
 
@@ -16,6 +17,7 @@ sealed class TransporterEditor : Editor
     SerializedProperty _edgeColor;
     SerializedProperty _edgeWidth;
     SerializedProperty _hueShift;
+    SerializedProperty _highlight;
 
     ReorderableList _renderers;
 
@@ -33,6 +35,7 @@ sealed class TransporterEditor : Editor
         _cellSize = serializedObject.FindProperty("_cellSize");
 
         _origin = serializedObject.FindProperty("_origin");
+        _inflation = serializedObject.FindProperty("_inflation");
         _swirl = serializedObject.FindProperty("_swirl");
         _scatter = serializedObject.FindProperty("_scatter");
 
@@ -40,6 +43,7 @@ sealed class TransporterEditor : Editor
         _edgeColor = serializedObject.FindProperty("_edgeColor");
         _edgeWidth = serializedObject.FindProperty("_edgeWidth");
         _hueShift = serializedObject.FindProperty("_hueShift");
+        _highlight = serializedObject.FindProperty("_highlight");
 
         _renderers = new ReorderableList(
             serializedObject,
@@ -76,6 +80,7 @@ sealed class TransporterEditor : Editor
         EditorGUILayout.LabelField("Animation");
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(_origin);
+        EditorGUILayout.PropertyField(_inflation);
         EditorGUILayout.PropertyField(_swirl);
         EditorGUILayout.PropertyField(_scatter);
         EditorGUI.indentLevel--;
@@ -88,6 +93,7 @@ sealed class TransporterEditor : Editor
         EditorGUILayout.PropertyField(_edgeWidth, Styles.Width);
         EditorGUI.indentLevel--;
         EditorGUILayout.PropertyField(_hueShift);
+        EditorGUILayout.PropertyField(_highlight);
         EditorGUI.indentLevel--;
 
         _renderers.DoLayoutList();

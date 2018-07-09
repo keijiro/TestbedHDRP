@@ -12,6 +12,7 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField] float _cellSize = 0.1f;
 
     [SerializeField] Transform _origin;
+    [SerializeField] float _inflation = 1;
     [SerializeField] float _swirl = 1;
     [SerializeField] float _scatter = 1;
 
@@ -19,8 +20,15 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField, ColorUsage(false, true)] Color _edgeColor;
     [SerializeField, Range(0, 8)] float _edgeWidth = 1;
     [SerializeField, Range(0, 1)] float _hueShift;
+    [SerializeField, Range(0, 1)] float _highlight = 0.2f;
 
     [SerializeField] Renderer[] _renderers;
+
+    void OnValidate()
+    {
+        _inflation = Mathf.Max(0, _inflation);
+        _cellSize = Mathf.Max(0, _cellSize);
+    }
 
     #endregion
 
@@ -61,7 +69,8 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
 
     static class ShaderIDs
     {
-        public static readonly int EffectParams = Shader.PropertyToID("_EffectParams");
+        public static readonly int CellParams = Shader.PropertyToID("_CellParams");
+        public static readonly int AnimParams = Shader.PropertyToID("_AnimParams");
         public static readonly int EffectOrigin = Shader.PropertyToID("_EffectOrigin");
         public static readonly int EffectPlane = Shader.PropertyToID("_EffectPlane");
         public static readonly int EffectPlanePrev = Shader.PropertyToID("_EffectPlanePrev");
@@ -120,7 +129,8 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
         // Filter out large deltas.
         if ((_prevEffectPlane - plane).magnitude > 100) _prevEffectPlane = plane;
 
-        var eparams = new Vector4(_cellDensity, _cellSize, _swirl, _scatter);
+        var cparams = new Vector3(_cellDensity, _cellSize, _highlight);
+        var aparams = new Vector3(_inflation, _swirl, _scatter);
         var origin = _origin != null ? _origin.position : Vector3.zero;
         var emission = ColorToHsvm(_emissionColor);
         var edge = ColorToHsvm(_edgeColor);
@@ -129,7 +139,8 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
         {
             if (renderer == null) continue;
             renderer.GetPropertyBlock(_sheet);
-            _sheet.SetVector(ShaderIDs.EffectParams, eparams);
+            _sheet.SetVector(ShaderIDs.CellParams, cparams);
+            _sheet.SetVector(ShaderIDs.AnimParams, aparams);
             _sheet.SetVector(ShaderIDs.EffectOrigin, origin);
             _sheet.SetVector(ShaderIDs.EffectPlane, plane);
             _sheet.SetVector(ShaderIDs.EffectPlanePrev, _prevEffectPlane);

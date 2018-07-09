@@ -1,7 +1,8 @@
 // Transportation effect geometry shader
 // https://github.com/keijiro/TestbedHDRP
 
-float4 _EffectParams; // cell density, cell size, swirl, scatter
+float3 _CellParams; // cell density, cell size, highlight probability
+float3 _AnimParams; // inflation, swirl, scatter
 float3 _EffectOrigin;
 float4 _EffectPlane;
 float4 _EffectPlanePrev;
@@ -11,7 +12,7 @@ float AnimationParameter(float4 plane, float3 positionOS, uint primitiveID)
 {
     float3 positionWS = TransformObjectToWorld(positionOS);
     float param = dot(plane.xyz, positionWS) - plane.w;
-    float random = lerp(0.75, 1, Hash(primitiveID * 761)); // 25% distribution
+    float random = lerp(1, 1.25, Hash(primitiveID * 761)); // 25% distribution
     return saturate(param * random);
 }
 
@@ -25,12 +26,13 @@ void CellAnimation(
     out float3 p_q0, out float3 p_q1, out float3 p_q2, out float3 p_q3, out float3 n_q
 )
 {
-    const float CellSize = _EffectParams.y;
-    const float Swirling = _EffectParams.z;
-    const float Scatter = _EffectParams.w;
+    const float CellSize = _CellParams.y;
+    const float Inflation = _AnimParams.x * 10;
+    const float Swirling = _AnimParams.y;
+    const float Scatter = _AnimParams.z;
 
     // Triangle inflation (only visible at the beginning of the animation)
-    float inflation = 1 + 20 * smoothstep(0, 0.2, param);
+    float inflation = 1 + Inflation * smoothstep(0, 0.2, param);
     p_t0 = lerp(center, p_t0, inflation);
     p_t1 = lerp(center, p_t1, inflation);
     p_t2 = lerp(center, p_t2, inflation);
@@ -104,7 +106,8 @@ void TransporterGeometry(
     inout TriangleStream<PackedVaryingsType> outStream
 )
 {
-    const float Density = _EffectParams.x;
+    const float Density = _CellParams.x;
+    const float Highlight = _CellParams.z;
 
     // Input vertices
     AttributesMesh v0 = ConvertToAttributesMesh(input[0]);
@@ -155,7 +158,7 @@ void TransporterGeometry(
     // Random selection
     if (Hash(primitiveID * 877) > Density)
     {
-        // Not selected: Simple scaling during [0.05, 0.2]
+        // Not selected: Simple scaling during [0.05, 0.1]
         param = smoothstep(0.05, 0.1, param);
         p0 = lerp(p0, center, param);
         p1 = lerp(p1, center, param);
@@ -189,7 +192,7 @@ void TransporterGeometry(
     // Self emission parameter (0:off -> 1:emission -> 2:edge)
     float intensity = smoothstep(0.05, 0.1, param) + smoothstep(0.1, 0.2, param);
     // Pick some cells and stop their animation at 1.0 to highlight them.
-    intensity = min(intensity, Hash(primitiveID * 329) < 0.2 ? 1 : 2);
+    intensity = min(intensity, Hash(primitiveID * 329) < Highlight ? 1 : 2);
 
     // Output vertices
     half random = Hash(primitiveID * 227);

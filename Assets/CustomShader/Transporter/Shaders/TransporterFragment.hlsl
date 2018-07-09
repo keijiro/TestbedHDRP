@@ -58,9 +58,10 @@ void TransporterFragment(
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
 
     // Custom: Cancel the normal map while the effect is active.
-    bool useBump = (input.color.x < 0);
-    surfaceData.normalWS = useBump ? surfaceData.normalWS : input.worldToTangent[2];
-    surfaceData.tangentWS = useBump ? surfaceData.tangentWS : input.worldToTangent[0];
+    float cancel = saturate(input.color.z);
+    surfaceData.baseColor *= 1.0 - cancel;
+    surfaceData.normalWS = lerp(surfaceData.normalWS, input.worldToTangent[2], cancel);
+    surfaceData.tangentWS = lerp(surfaceData.tangentWS, input.worldToTangent[0], cancel);
 
 #ifdef DEBUG_DISPLAY
     ApplyDebugToSurfaceData(input.worldToTangent, surfaceData);

@@ -17,6 +17,7 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
 
     [SerializeField, ColorUsage(false, true)] Color _emissionColor;
     [SerializeField, ColorUsage(false, true)] Color _edgeColor;
+    [SerializeField, Range(0, 8)] float _edgeWidth = 1;
     [SerializeField, Range(0, 1)] float _hueShift;
 
     [SerializeField] Renderer[] _renderers;
@@ -66,6 +67,7 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
         public static readonly int EffectPlanePrev = Shader.PropertyToID("_EffectPlanePrev");
         public static readonly int EmissionHSVM = Shader.PropertyToID("_EmissionHSVM");
         public static readonly int EdgeHSVM = Shader.PropertyToID("_EdgeHSVM");
+        public static readonly int EdgeWidth = Shader.PropertyToID("_EdgeWidth");
         public static readonly int HueShift = Shader.PropertyToID("_HueShift");
         public static readonly int LocalTime = Shader.PropertyToID("_LocalTime");
     }
@@ -133,6 +135,7 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
             _sheet.SetVector(ShaderIDs.EffectPlanePrev, _prevEffectPlane);
             _sheet.SetVector(ShaderIDs.EmissionHSVM, emission);
             _sheet.SetColor(ShaderIDs.EdgeHSVM, edge);
+            _sheet.SetFloat(ShaderIDs.EdgeWidth, _edgeWidth);
             _sheet.SetFloat(ShaderIDs.HueShift, _hueShift);
             _sheet.SetFloat(ShaderIDs.LocalTime, time);
             renderer.SetPropertyBlock(_sheet);

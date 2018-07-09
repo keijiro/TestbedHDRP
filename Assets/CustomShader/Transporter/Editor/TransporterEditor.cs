@@ -14,6 +14,7 @@ sealed class TransporterEditor : Editor
 
     SerializedProperty _emissionColor;
     SerializedProperty _edgeColor;
+    SerializedProperty _edgeWidth;
     SerializedProperty _hueShift;
 
     ReorderableList _renderers;
@@ -23,7 +24,7 @@ sealed class TransporterEditor : Editor
         public static readonly GUIContent Density = new GUIContent("Density");
         public static readonly GUIContent Size = new GUIContent("Size");
         public static readonly GUIContent BaseEmission = new GUIContent("Base Emission");
-        public static readonly GUIContent Edge = new GUIContent("Edge");
+        public static readonly GUIContent Width = new GUIContent("Width");
     }
 
     void OnEnable()
@@ -37,6 +38,7 @@ sealed class TransporterEditor : Editor
 
         _emissionColor = serializedObject.FindProperty("_emissionColor");
         _edgeColor = serializedObject.FindProperty("_edgeColor");
+        _edgeWidth = serializedObject.FindProperty("_edgeWidth");
         _hueShift = serializedObject.FindProperty("_hueShift");
 
         _renderers = new ReorderableList(
@@ -71,17 +73,20 @@ sealed class TransporterEditor : Editor
         EditorGUILayout.PropertyField(_cellSize, Styles.Size);
         EditorGUI.indentLevel--;
 
-        EditorGUILayout.LabelField("Animation Parameters");
+        EditorGUILayout.LabelField("Animation");
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(_origin);
         EditorGUILayout.PropertyField(_swirl);
         EditorGUILayout.PropertyField(_scatter);
         EditorGUI.indentLevel--;
 
-        EditorGUILayout.LabelField("Color Attributes");
+        EditorGUILayout.LabelField("Rendering");
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(_emissionColor, Styles.BaseEmission);
-        EditorGUILayout.PropertyField(_edgeColor, Styles.Edge);
+        EditorGUILayout.PropertyField(_edgeColor);
+        EditorGUI.indentLevel++;
+        EditorGUILayout.PropertyField(_edgeWidth, Styles.Width);
+        EditorGUI.indentLevel--;
         EditorGUILayout.PropertyField(_hueShift);
         EditorGUI.indentLevel--;
 

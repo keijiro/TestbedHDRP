@@ -916,7 +916,8 @@ MonoBehaviour:
   _scatter: 4
   _emissionColor: {r: 3.3686013, g: 2.0168583, b: 1.0405626, a: 0}
   _edgeColor: {r: 4.5412054, g: 2.6830873, b: 0, a: 0}
-  _hueShift: 0.03
+  _edgeWidth: 1
+  _hueShift: 0.015
   _renderers:
   - {fileID: 1345559284}
 --- !u!4 &2015354182

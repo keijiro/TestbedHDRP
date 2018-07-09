@@ -155,13 +155,13 @@ void TransporterGeometry(
     // Random selection
     if (Hash(primitiveID * 877) > Density)
     {
-        // Not selected: Simple scaling during [0, 0.1]
-        param = smoothstep(0, 0.1, param);
+        // Not selected: Simple scaling during [0.05, 0.2]
+        param = smoothstep(0.05, 0.1, param);
         p0 = lerp(p0, center, param);
         p1 = lerp(p1, center, param);
         p2 = lerp(p2, center, param);
 
-        param_prev = smoothstep(0, 0.1, param_prev);
+        param_prev = smoothstep(0.05, 0.1, param_prev);
         p0_prev = lerp(p0_prev, center_prev, param_prev);
         p1_prev = lerp(p1_prev, center_prev, param_prev);
         p2_prev = lerp(p2_prev, center_prev, param_prev);
@@ -186,12 +186,13 @@ void TransporterGeometry(
         p_q0_prev, p_q1_prev, p_q2_prev, p_q3_prev, n_q_prev
     );
 
-    // Self emission (triangles & small % of quads)
-    float random = Hash(primitiveID * 329);
-    float intensity = 1 - smoothstep(0, 0.2, param) + (random < 0.2);
+    // Self emission parameter (0:off -> 1:emission -> 2:edge)
+    float intensity = smoothstep(0.05, 0.1, param) + smoothstep(0.1, 0.2, param);
+    // Pick some cells and stop their animation at 1.0 to highlight them.
+    intensity = min(intensity, Hash(primitiveID * 329) < 0.2 ? 1 : 2);
 
     // Output vertices
-    random = Hash(primitiveID * 227);
+    half random = Hash(primitiveID * 227);
     outStream.Append(VertexOutput(v0, p_q0, p_q0_prev, n_q, intensity, random, half2(0, 0)));
     outStream.Append(VertexOutput(v1, p_q1, p_q1_prev, n_q, intensity, random, half2(1, 0)));
     outStream.Append(VertexOutput(v2, p_q2, p_q2_prev, n_q, intensity, random, half2(0, 1)));

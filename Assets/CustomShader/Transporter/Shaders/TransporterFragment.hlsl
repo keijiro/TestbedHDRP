@@ -1,42 +1,38 @@
+// Transportation effect fragment shader
+// https://github.com/keijiro/TestbedHDRP
+
 half4 _EmissionHSVM;
 half4 _EdgeHSVM;
+half _EdgeWidth;
 half _HueShift;
 
+// Self emission term (effect emission + edge detection)
 half3 SelfEmission(FragInputs input)
 {
     half2 quad = input.color.xy;
-    half intensity = input.color.z;
+    half intensity = input.color.z; // 0:off -> 1:emission -> 2:edge
     half random = input.color.w;
 
     // Edge detection
-    half2 fw_quad = fwidth(quad);
-    half2 edge2 = min(smoothstep(0, fw_quad * 2,     quad),
-                      smoothstep(0, fw_quad * 2, 1 - quad));
+    half2 edge2 = min(quad, 1 - quad) > fwidth(quad) * _EdgeWidth;
     half edge = (1 - min(edge2.x, edge2.y)) * (quad.x >= 0);
 
     // Random hue shift
-    half hueShift = (random - 0.5) * _HueShift;
+    half hueShift = (random - 0.5) * 2 * _HueShift;
 
     // Emission color
     half3 c1 = HsvToRgb(half3(_EmissionHSVM.x + hueShift, _EmissionHSVM.yz));
-    c1 *= _EmissionHSVM.w * intensity;
+    c1 *= _EmissionHSVM.w * saturate(intensity);
 
     // Edge color
     half3 c2 = HsvToRgb(half3(_EdgeHSVM.x + hueShift, _EdgeHSVM.yz));
     c2 *= edge * _EdgeHSVM.w;
 
-    return c1 + c2;
+    return lerp(c1, c2, saturate(intensity - 1));
 }
 
-//
-// This fragment shader is copy-pasted from
-// HDRP/ShaderPass/ShaderPassGBuffer.hlsl
-// There are only two modifications from the original shader.
-//
-// - Changed the function name.
-// - Cancel normal mapping for voxels.
-// - Added the self emission term.
-//
+// Fragment shader function, copy-pasted from HDRP/ShaderPass/ShaderPassGBuffer.hlsl
+// There are a few modification from the original shader. See "Custom:" for details.
 void TransporterFragment(
             PackedVaryingsToPS packedInput,
             OUTPUT_GBUFFER(outGBuffer)
@@ -61,7 +57,7 @@ void TransporterFragment(
     BuiltinData builtinData;
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
 
-    // Custom: Normal map cancelling
+    // Custom: Cancel the normal map while the effect is active.
     bool useBump = (input.color.x < 0);
     surfaceData.normalWS = useBump ? surfaceData.normalWS : input.worldToTangent[2];
     surfaceData.tangentWS = useBump ? surfaceData.tangentWS : input.worldToTangent[0];
@@ -76,7 +72,7 @@ void TransporterFragment(
 
     float3 bakeDiffuseLighting = GetBakedDiffuseLighting(surfaceData, builtinData, bsdfData, preLightData);
 
-    // Custom: Self emission term
+    // Custom: Add the self emission term.
     bakeDiffuseLighting += SelfEmission(input);
 
     ENCODE_INTO_GBUFFER(surfaceData, bakeDiffuseLighting, posInput.positionSS, outGBuffer);

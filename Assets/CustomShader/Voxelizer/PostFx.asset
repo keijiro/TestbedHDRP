@@ -220,8 +220,8 @@ MonoBehaviour:
     overrideState: 0
     value: 1
   directLightingStrength:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 1
   radius:
     overrideState: 0
     value: 0.25

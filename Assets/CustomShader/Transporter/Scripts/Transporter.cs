@@ -1,7 +1,9 @@
+// Transportation effect geometry shader
+// https://github.com/keijiro/TestbedHDRP
+
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
-using System.Collections.Generic;
 
 [ExecuteInEditMode]
 public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
@@ -26,8 +28,8 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
 
     void OnValidate()
     {
-        _inflation = Mathf.Max(0, _inflation);
         _cellSize = Mathf.Max(0, _cellSize);
+        _inflation = Mathf.Max(0, _inflation);
     }
 
     #endregion

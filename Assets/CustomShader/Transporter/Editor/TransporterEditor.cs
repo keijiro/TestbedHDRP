@@ -1,3 +1,6 @@
+// Transportation effect geometry shader
+// https://github.com/keijiro/TestbedHDRP
+
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;

@@ -49,7 +49,7 @@ void CellAnimation(
     float2 sc = float2(sin(swirl), cos(swirl));
     p_rel.xz = mul(float2x2(sc.y, -sc.x, sc.x, sc.y), p_rel.xz);
 
-    // Trangent space reconstruction
+    // Tangent space reconstruction
     float3 tan_y = float3(0, 1, 0);
     float3 tan_z = normalize(float3(p_rel.x, 0, p_rel.z));
     float3 tan_x = normalize(cross(tan_y, tan_z));

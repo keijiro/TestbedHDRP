@@ -337,7 +337,7 @@ MonoBehaviour:
   _cellSize: 0.1
   _cellDirection: {fileID: 0}
   _inflation: 1
-  _fluctuation: 1
+  _stretch: 6
   _emissionColor: {r: 8.47419, g: 3.3275614, b: 1.0648196, a: 0}
   _edgeColor: {r: 4.2870936, g: 0, b: 0, a: 0}
   _edgeWidth: 1
@@ -621,34 +621,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 5, y: 0, z: 0}
---- !u!1 &748264590
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 748264591}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &748264591
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 748264590}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &983266154
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,6 +1015,8 @@ PlayableDirector:
     value: {fileID: 2015354183}
   - key: {fileID: 114134084675595522, guid: 517fddbf6ddafff47b7b5546ac75f389, type: 2}
     value: {fileID: 342044185}
+  - key: {fileID: 114647517070742340, guid: 517fddbf6ddafff47b7b5546ac75f389, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - b528be8279f786d48bf247a18ac49893: {fileID: 342044183}
@@ -1092,7 +1066,7 @@ MonoBehaviour:
   _cellSize: 0.1
   _cellDirection: {fileID: 0}
   _inflation: 1
-  _fluctuation: 1
+  _stretch: 6
   _emissionColor: {r: 8.47419, g: 3.3275614, b: 1.0648196, a: 0}
   _edgeColor: {r: 4.2870936, g: 0, b: 0, a: 0}
   _edgeWidth: 1

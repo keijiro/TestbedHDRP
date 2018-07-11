@@ -4,7 +4,7 @@
 #include "Assets/CustomShader/Common/Shader/SimplexNoise3D.hlsl"
 
 float3 _CellParams; // cell density, cell size, highlight probability
-float2 _AnimParams; // inflation, fluctuation
+float2 _AnimParams; // inflation, stretch
 float3 _CellSpace1;
 float3 _CellSpace2;
 float4 _EffectPlane;
@@ -16,7 +16,7 @@ float AnimationParameter(float4 plane, float3 positionOS, uint primitiveID)
 {
     float3 positionWS = TransformObjectToWorld(positionOS);
     float param = dot(plane.xyz, positionWS) - plane.w;
-    float random = lerp(1, 2, Hash(primitiveID * 761)); // 25% distribution
+    float random = 1 + Hash(primitiveID * 761); // Random distribution
     return saturate(param * random);
 }
 
@@ -32,7 +32,7 @@ void CellAnimation(
 {
     const float CellSize = _CellParams.y;
     const float Inflation = _AnimParams.x * 10;
-    const float Fluctuation = _AnimParams.y;
+    const float Stretch = _AnimParams.y;
 
     // Triangle inflation (only visible at the beginning of the animation)
     float inflation = 1 + Inflation * smoothstep(0, 0.3, param);
@@ -40,21 +40,18 @@ void CellAnimation(
     p_t1 = lerp(center, p_t1, inflation);
     p_t2 = lerp(center, p_t2, inflation);
 
-    // Size of the output quad
-    float size = CellSize;// * (1 - smoothstep(0.75, 1, param)); // Ease-out
-    size *= lerp(0.5, 1, Hash(primitiveID * 701));            // 50% random
-
-//    center += snoise_grad(center * 3 + _LocalTime).xyz * 0.02;
+    // Cell quad size
+    float baseSize = CellSize * lerp(0.5, 1, Hash(primitiveID * 701));
+    float scale = smoothstep(0.4, 1.6, param) * 2; // Ease-in, steep-out
+    float3 cq_x = _CellSpace1 * baseSize * (1 - scale);
+    float3 cq_y = _CellSpace2 * baseSize * (1 + scale * scale * Stretch);
 
     // Triangle to quad transformation
     half t2q = smoothstep(0, 0.6, param);
-    float move = smoothstep(0.4, 1.6, param) * 2;
-    float3 dx = _CellSpace1 * size* (1 - move);
-    float3 dy = _CellSpace2 * size* (1 + 5 * move * move);
-    p_q0 = lerp(p_t0, center + (-dx - dy), t2q);
-    p_q1 = lerp(p_t1, center + (+dx - dy), t2q);
-    p_q2 = lerp(p_t2, center + (-dx + dy), t2q);
-    p_q3 = lerp(p_t2, center + (+dx + dy), t2q);
+    p_q0 = lerp(p_t0, center - cq_x - cq_y, t2q);
+    p_q1 = lerp(p_t1, center + cq_x - cq_y, t2q);
+    p_q2 = lerp(p_t2, center - cq_x + cq_y, t2q);
+    p_q3 = lerp(p_t2, center + cq_x + cq_y, t2q);
 
     // Normal vector recalculation
     n_q = normalize(cross(p_q1 - p_q0, p_q2 - p_q0));
@@ -131,7 +128,7 @@ void RegeneratorGeometry(
     // Random selection
     if (Hash(primitiveID * 877) > Density)
     {
-        // Not selected: Simple scaling during [0.05, 0.1]
+        // Not selected: Simple scaling during [0.1, 0.4]
         param = smoothstep(0.1, 0.4, param);
         p0 = lerp(p0, center, param);
         p1 = lerp(p1, center, param);

@@ -13,7 +13,7 @@ sealed class RegeneratorEditor : Editor
     SerializedProperty _cellDirection;
 
     SerializedProperty _inflation;
-    SerializedProperty _fluctuation;
+    SerializedProperty _stretch;
 
     SerializedProperty _emissionColor;
     SerializedProperty _edgeColor;
@@ -39,7 +39,7 @@ sealed class RegeneratorEditor : Editor
         _cellDirection = serializedObject.FindProperty("_cellDirection");
 
         _inflation = serializedObject.FindProperty("_inflation");
-        _fluctuation = serializedObject.FindProperty("_fluctuation");
+        _stretch = serializedObject.FindProperty("_stretch");
 
         _emissionColor = serializedObject.FindProperty("_emissionColor");
         _edgeColor = serializedObject.FindProperty("_edgeColor");
@@ -83,7 +83,7 @@ sealed class RegeneratorEditor : Editor
         EditorGUILayout.LabelField("Animation");
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(_inflation);
-        EditorGUILayout.PropertyField(_fluctuation);
+        EditorGUILayout.PropertyField(_stretch);
         EditorGUI.indentLevel--;
 
         EditorGUILayout.LabelField("Rendering");

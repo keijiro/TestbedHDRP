@@ -15,7 +15,7 @@ public sealed class Regenerator : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField] Transform _cellDirection;
 
     [SerializeField] float _inflation = 1;
-    [SerializeField] float _fluctuation = 1;
+    [SerializeField] float _stretch = 5;
 
     [SerializeField, ColorUsage(false, true)] Color _emissionColor;
     [SerializeField, ColorUsage(false, true)] Color _edgeColor;
@@ -29,7 +29,7 @@ public sealed class Regenerator : MonoBehaviour, ITimeControl, IPropertyPreview
     {
         _cellSize = Mathf.Max(0, _cellSize);
         _inflation = Mathf.Max(0, _inflation);
-        _fluctuation = Mathf.Max(0, _fluctuation);
+        _stretch = Mathf.Max(0, _stretch);
     }
 
     #endregion
@@ -133,7 +133,7 @@ public sealed class Regenerator : MonoBehaviour, ITimeControl, IPropertyPreview
         if ((_prevEffectPlane - plane).magnitude > 100) _prevEffectPlane = plane;
 
         var cparams = new Vector3(_cellDensity, _cellSize, _highlight);
-        var aparams = new Vector3(_inflation, _fluctuation);
+        var aparams = new Vector3(_inflation, _stretch);
         var cspace1 = _cellDirection != null ? _cellDirection.right : Vector3.right;
         var cspace2 = _cellDirection != null ? _cellDirection.up : Vector3.up;
         var emission = ColorToHsvm(_emissionColor);

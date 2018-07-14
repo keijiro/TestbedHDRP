@@ -16,4 +16,9 @@ public static class Random
     {
         return Hash(seed) / 4294967295.0f; // 2^32-1
     }
+
+    public static float Value01(int seed)
+    {
+        return Value01((uint)seed);
+    }
 }

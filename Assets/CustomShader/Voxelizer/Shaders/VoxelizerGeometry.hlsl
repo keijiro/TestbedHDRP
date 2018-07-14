@@ -1,8 +1,12 @@
+// Voxelizer effect geometry shader
+// https://github.com/keijiro/TestbedHDRP
+
+#include "Assets/CustomShader/Common/Shader/SimplexNoise3D.hlsl"
+
 half2 _VoxelParams; // density, scale
 half3 _AnimParams;  // stretch, fall distance, fluctuation
 float4 _EffectorPlane;
 float4 _PrevEffectorPlane;
-float _LocalTime;
 
 PackedVaryingsType VertexOutput(
     AttributesMesh source,
@@ -11,20 +15,13 @@ PackedVaryingsType VertexOutput(
     half emission = 0, half random = 0, half2 baryCoord = 0.5
 )
 {
-    source.positionOS = lerp(position0, position1, param);
-#ifdef ATTRIBUTES_NEED_NORMAL
-    source.normalOS = normalize(lerp(normal0, normal1, param));
-#endif
-#ifdef ATTRIBUTES_NEED_COLOR
-    source.color = half4(baryCoord, emission, random);
-#endif
-#if SHADERPASS == SHADERPASS_VELOCITY
-    AttributesPass attrib;
-    attrib.previousPositionOS = lerp(position0_prev, position1_prev, param_prev);
-    return Vert(source, attrib);
-#else
-    return Vert(source);
-#endif
+    return PackVertexData(
+        source,
+        lerp(position0, position1, param),
+        lerp(position0_prev, position1_prev, param_prev),
+        normalize(lerp(normal0, normal1, param)),
+        half4(baryCoord, emission, random)
+    );
 }
 
 // Calculates a cube position and scale.
@@ -98,7 +95,8 @@ void VoxelizerGeometry(
     float3 center_prev = (p0_prev + p1_prev + p2_prev) / 3;
 
     // Deformation parameter
-    float param = dot(_EffectorPlane.xyz, TransformObjectToWorld(center));
+    float3 center_ws = GetAbsolutePositionWS(TransformObjectToWorld(center));
+    float param = dot(_EffectorPlane.xyz, center_ws);
     param = 1 - param + _EffectorPlane.w;
 
     float param_prev = param - _EffectorPlane.w + _PrevEffectorPlane.w;

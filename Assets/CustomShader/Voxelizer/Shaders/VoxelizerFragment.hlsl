@@ -1,3 +1,6 @@
+// Voxelizer effect fragment shader
+// https://github.com/keijiro/TestbedHDRP
+
 half4 _EmissionHsvm1;
 half4 _EmissionHsvm2;
 half3 _TransitionColor;
@@ -24,7 +27,7 @@ half3 SelfEmission(FragInputs input)
     half edge = 1 - min(edge2.x, edge2.y);
 
     return
-        face * em1*1 +
+        face * em1 +
         _TransitionColor * em2 * face +
         edge * _LineColor * em1;
 }
@@ -50,10 +53,10 @@ void VoxelizerFragment(
     FragInputs input = UnpackVaryingsMeshToFragInputs(packedInput.vmesh);
 
     // input.positionSS is SV_Position
-    PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionWS);
+    PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS);
 
 #ifdef VARYINGS_NEED_POSITION_WS
-    float3 V = GetWorldSpaceNormalizeViewDir(input.positionWS);
+    float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
 #else
     float3 V = 0; // Avoid the division by 0
 #endif

@@ -322,6 +322,8 @@ Shader "Voxelizer"
         // This tags allow to use the shader replacement features
         Tags { "RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" }
 
+        // Custom: Omitted SceneSelectionPass.
+
         // Caution: The outline selection in the editor use the vertex shader/hull/domain shader of the first pass declare. So it should not bethe  meta pass.
         Pass
         {
@@ -364,7 +366,7 @@ Shader "Voxelizer"
             #include "HDRP/ShaderPass/ShaderPassGBuffer.hlsl"
 
             // Custom: Geometry and fragment shader implementation
-            #include "VoxelizerCommon.hlsl"
+            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
             #include "VoxelizerGeometry.hlsl"
             #include "VoxelizerFragment.hlsl"
 
@@ -403,7 +405,7 @@ Shader "Voxelizer"
             #include "HDRP/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
-            #include "VoxelizerCommon.hlsl"
+            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
             #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points
@@ -450,7 +452,7 @@ Shader "Voxelizer"
             #undef unity_MotionVectorsParams
 
             // Custom: Geometry shader implementation
-            #include "VoxelizerCommon.hlsl"
+            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
             #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points

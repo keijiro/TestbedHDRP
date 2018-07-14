@@ -14,7 +14,7 @@ float _LocalTime;
 // Calculate an animation parameter from an object space position.
 float AnimationParameter(float4 plane, float3 positionOS, uint primitiveID)
 {
-    float3 positionWS = TransformObjectToWorld(positionOS);
+    float3 positionWS = GetAbsolutePositionWS(TransformObjectToWorld(positionOS));
     float param = dot(plane.xyz, positionWS) - plane.w;
     float random = 1 + Hash(primitiveID * 761); // Random distribution
     return saturate(param * random);

@@ -39,6 +39,10 @@ public class LightCordController : MonoBehaviour
         _vertices = new Vector3 [vcount];
         _colors = new Color [vcount];
 
+        // Initial vertex positions
+        for (var i = 0; i < _vertices.Length; i++)
+            _vertices[i] = math.sin(_lissajous * i / -60.0f) * _radius;
+
         // Index array
         var indices = new int [_vertices.Length];
         for (var i = 0; i < indices.Length; i++) indices[i] = i;

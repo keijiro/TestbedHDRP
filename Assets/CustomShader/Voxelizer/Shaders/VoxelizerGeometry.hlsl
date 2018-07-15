@@ -84,9 +84,9 @@ void VoxelizerGeometry(
     float3 n1 = v1.normalOS;
     float3 n2 = v2.normalOS;
 #else
-    float3 n0 = 0;
-    float3 n1 = 0;
-    float3 n2 = 0;
+    float3 n0 = float3(1, 0, 0);
+    float3 n1 = float3(1, 0, 0);
+    float3 n2 = float3(1, 0, 0);
 #endif
 
     float3 center = (p0 + p1 + p2) / 3;
@@ -124,6 +124,9 @@ void VoxelizerGeometry(
         float rand1 = Hash(seed + 1);
         float rand2 = Hash(seed + 5);
 
+        // Object space to world space conversion
+        center = GetAbsolutePositionWS(TransformObjectToWorld(center));
+
         // Cube position and scale
         float3 pos, pos_prev, scale, scale_prev;
         CubePosScale(center, size, rand1, param, pos, scale);
@@ -156,43 +159,62 @@ void VoxelizerGeometry(
         float3 pc6_prev = pos_prev + float3(-1, +1, +1) * scale_prev;
         float3 pc7_prev = pos_prev + float3(+1, +1, +1) * scale_prev;
 
+        // World space to object space conversion
+        pc0 = TransformWorldToObject(GetCameraRelativePositionWS(pc0));
+        pc1 = TransformWorldToObject(GetCameraRelativePositionWS(pc1));
+        pc2 = TransformWorldToObject(GetCameraRelativePositionWS(pc2));
+        pc3 = TransformWorldToObject(GetCameraRelativePositionWS(pc3));
+        pc4 = TransformWorldToObject(GetCameraRelativePositionWS(pc4));
+        pc5 = TransformWorldToObject(GetCameraRelativePositionWS(pc5));
+        pc6 = TransformWorldToObject(GetCameraRelativePositionWS(pc6));
+        pc7 = TransformWorldToObject(GetCameraRelativePositionWS(pc7));
+
+        pc0_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc0_prev));
+        pc1_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc1_prev));
+        pc2_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc2_prev));
+        pc3_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc3_prev));
+        pc4_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc4_prev));
+        pc5_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc5_prev));
+        pc6_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc6_prev));
+        pc7_prev = TransformWorldToObject(GetCameraRelativePositionWS(pc7_prev));
+
         // Vertex outputs
-        float3 nc = float3(-1, 0, 0);
+        float3 nc = TransformWorldToObjectDir(float3(-1, 0, 0));
         outStream.Append(VertexOutput(v0, p0, pc2, p0_prev, pc2_prev, n0, nc, morph, morph_prev, em, rand2, float2(0, 0)));
         outStream.Append(VertexOutput(v2, p2, pc0, p2_prev, pc0_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
         outStream.Append(VertexOutput(v0, p0, pc6, p0_prev, pc6_prev, n0, nc, morph, morph_prev, em, rand2, float2(0, 1)));
         outStream.Append(VertexOutput(v2, p2, pc4, p2_prev, pc4_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        nc = float3(1, 0, 0);
+        nc = TransformWorldToObjectDir(float3(1, 0, 0));
         outStream.Append(VertexOutput(v2, p2, pc1, p2_prev, pc1_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
         outStream.Append(VertexOutput(v1, p1, pc3, p1_prev, pc3_prev, n1, nc, morph, morph_prev, em, rand2, float2(1, 0)));
         outStream.Append(VertexOutput(v2, p2, pc5, p2_prev, pc5_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 1)));
         outStream.Append(VertexOutput(v1, p1, pc7, p1_prev, pc7_prev, n1, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        nc = float3(0, -1, 0);
+        nc = TransformWorldToObjectDir(float3(0, -1, 0));
         outStream.Append(VertexOutput(v2, p2, pc0, p2_prev, pc0_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
         outStream.Append(VertexOutput(v2, p2, pc1, p2_prev, pc1_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
         outStream.Append(VertexOutput(v2, p2, pc4, p2_prev, pc4_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 1)));
         outStream.Append(VertexOutput(v2, p2, pc5, p2_prev, pc5_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        nc = float3(0, 1, 0);
+        nc = TransformWorldToObjectDir(float3(0, 1, 0));
         outStream.Append(VertexOutput(v1, p1, pc3, p1_prev, pc3_prev, n1, nc, morph, morph_prev, em, rand2, float2(0, 0)));
         outStream.Append(VertexOutput(v0, p0, pc2, p0_prev, pc2_prev, n0, nc, morph, morph_prev, em, rand2, float2(1, 0)));
         outStream.Append(VertexOutput(v1, p1, pc7, p1_prev, pc7_prev, n1, nc, morph, morph_prev, em, rand2, float2(0, 1)));
         outStream.Append(VertexOutput(v0, p0, pc6, p0_prev, pc6_prev, n0, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        nc = float3(0, 0, -1);
+        nc = TransformWorldToObjectDir(float3(0, 0, -1));
         outStream.Append(VertexOutput(v2, p2, pc1, p2_prev, pc1_prev, n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
         outStream.Append(VertexOutput(v2, p2, pc0, p2_prev, pc0_prev, n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
         outStream.Append(VertexOutput(v1, p1, pc3, p1_prev, pc3_prev, n1, nc, morph, morph_prev, em, rand2, float2(0, 1)));
         outStream.Append(VertexOutput(v0, p0, pc2, p0_prev, pc2_prev, n0, nc, morph, morph_prev, em, rand2, float2(1, 1)));
         outStream.RestartStrip();
 
-        nc = float3(0, 0, 1);
+        nc = TransformWorldToObjectDir(float3(0, 0, 1));
         outStream.Append(VertexOutput(v2, p2, pc4, p2_prev, pc4_prev, -n2, nc, morph, morph_prev, em, rand2, float2(0, 0)));
         outStream.Append(VertexOutput(v2, p2, pc5, p2_prev, pc5_prev, -n2, nc, morph, morph_prev, em, rand2, float2(1, 0)));
         outStream.Append(VertexOutput(v0, p0, pc6, p0_prev, pc6_prev, -n0, nc, morph, morph_prev, em, rand2, float2(0, 1)));

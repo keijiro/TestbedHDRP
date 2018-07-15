@@ -43,8 +43,8 @@ void CellAnimation(
     // Cell quad size
     float baseSize = CellSize * lerp(0.5, 1, Hash(primitiveID * 701));
     float scale = smoothstep(0.4, 1.6, param) * 2; // Ease-in, steep-out
-    float3 cq_x = _CellSpace1 * baseSize * (1 - scale);
-    float3 cq_y = _CellSpace2 * baseSize * (1 + scale * scale * Stretch);
+    float3 cq_x = TransformWorldToObjectDir(_CellSpace1) * baseSize * (1 - scale);
+    float3 cq_y = TransformWorldToObjectDir(_CellSpace2) * baseSize * (1 + scale * scale * Stretch);
 
     // Triangle to quad transformation
     half t2q = smoothstep(0, 0.6, param);

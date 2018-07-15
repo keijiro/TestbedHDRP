@@ -21,7 +21,7 @@ float AnimationParameter(float4 plane, float3 positionOS, uint primitiveID)
 void CellAnimation(
     uint primitiveID, float param,
     // Input: triangle vertices and centroid
-    float3 p_t0, float3 p_t1, float3 p_t2, float3 center,
+    float3 p_t0, float3 p_t1, float3 p_t2,
     // Output: quad positions and normal vector
     out float3 p_q0, out float3 p_q1, out float3 p_q2, out float3 p_q3, out float3 n_q
 )
@@ -31,8 +31,14 @@ void CellAnimation(
     const float Swirling = _AnimParams.y;
     const float Scatter = _AnimParams.z;
 
+    // Object space to world space conversion
+    p_t0 = GetAbsolutePositionWS(TransformObjectToWorld(p_t0));
+    p_t1 = GetAbsolutePositionWS(TransformObjectToWorld(p_t1));
+    p_t2 = GetAbsolutePositionWS(TransformObjectToWorld(p_t2));
+
     // Triangle inflation (only visible at the beginning of the animation)
     float inflation = 1 + Inflation * smoothstep(0, 0.2, param);
+    float3 center = (p_t0 + p_t1 + p_t2) / 3;
     p_t0 = lerp(center, p_t0, inflation);
     p_t1 = lerp(center, p_t1, inflation);
     p_t2 = lerp(center, p_t2, inflation);
@@ -69,6 +75,12 @@ void CellAnimation(
     p_q1 = lerp(p_t1, p_qc + (+tan_x - tan_y) * size, t2q);
     p_q2 = lerp(p_t2, p_qc + (-tan_x + tan_y) * size, t2q);
     p_q3 = lerp(p_t2, p_qc + (+tan_x + tan_y) * size, t2q);
+
+    // World space to object space conversion
+    p_q0 = TransformWorldToObject(GetCameraRelativePositionWS(p_q0));
+    p_q1 = TransformWorldToObject(GetCameraRelativePositionWS(p_q1));
+    p_q2 = TransformWorldToObject(GetCameraRelativePositionWS(p_q2));
+    p_q3 = TransformWorldToObject(GetCameraRelativePositionWS(p_q3));
 
     // Normal vector recalculation
     n_q = normalize(cross(p_q1 - p_q0, p_q2 - p_q0));
@@ -179,13 +191,13 @@ void TransporterGeometry(
     // Cell animation
     float3 p_q0, p_q1, p_q2, p_q3, n_q;
     CellAnimation(
-        primitiveID, param, p0, p1, p2, center,
+        primitiveID, param, p0, p1, p2,
         p_q0, p_q1, p_q2, p_q3, n_q
     );
 
     float3 p_q0_prev, p_q1_prev, p_q2_prev, p_q3_prev, n_q_prev;
     CellAnimation(
-        primitiveID, param_prev, p0_prev, p1_prev, p2_prev, center_prev,
+        primitiveID, param_prev, p0_prev, p1_prev, p2_prev,
         p_q0_prev, p_q1_prev, p_q2_prev, p_q3_prev, n_q_prev
     );
 

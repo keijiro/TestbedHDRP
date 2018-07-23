@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 599532446}
   - component: {fileID: 599532447}
   m_Layer: 8
-  m_Name: GameObject
+  m_Name: Post Fx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,8 +186,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 621712617}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &599532447
 MonoBehaviour:
@@ -253,7 +253,7 @@ MonoBehaviour:
     enableSubsurfaceScattering: 1
     enableTransmission: 1
     enableAtmosphericScattering: 1
-    enableVolumetric: 1
+    enableVolumetrics: 1
     diffuseGlobalDimmer: 1
     specularGlobalDimmer: 1
     enableForwardRenderingOnly: 0
@@ -329,8 +329,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -6.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 599532446}
+  m_Children: []
   m_Father: {fileID: 1032969683}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -380,6 +379,7 @@ MonoBehaviour:
       size: 256
       exposure: 0.12
     overlaySettings:
+      linearDepth: 0
       motionColorIntensity: 4
       motionGridSize: 64
       colorBlindnessType: 0
@@ -393,6 +393,8 @@ MonoBehaviour:
   - assemblyQualifiedName: Kino.PostProcessing.Recolor, jp.keijiro.kino.post-processing.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - assemblyQualifiedName: Kino.PostProcessing.Streak, jp.keijiro.kino.post-processing.Runtime,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - assemblyQualifiedName: Kino.PostProcessing.Isoline, jp.keijiro.kino.post-processing.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   m_AfterStackBundles:
   - assemblyQualifiedName: Kino.PostProcessing.Overlay, jp.keijiro.kino.post-processing.Runtime,
@@ -425,7 +427,7 @@ Transform:
   m_Children:
   - {fileID: 621712617}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1032969684
 Animator:
@@ -515,7 +517,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1339069885
 GameObject:
@@ -550,6 +552,7 @@ MonoBehaviour:
   shadowResolution: 512
   shadowDimmer: 1
   shadowFadeDistance: 10000
+  contactShadows: 0
   viewBiasMin: 0.2
   viewBiasMax: 100
   viewBiasScale: 1
@@ -588,7 +591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 1
+  version: 1.1
   directionalIntensity: 3.1415927
   punctualIntensity: 600
   areaIntensity: 4
@@ -596,6 +599,7 @@ MonoBehaviour:
   m_InnerSpotPercent: 0
   lightDimmer: 1
   volumetricDimmer: 1
+  lightUnit: 0
   fadeDistance: 10000
   affectDiffuse: 1
   affectSpecular: 1
@@ -611,6 +615,8 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
+  displayLightIntensity: 4
+  displayAreaLightEmissiveMesh: 0
 --- !u!108 &1339069888
 Light:
   m_ObjectHideFlags: 0
@@ -659,7 +665,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1362795033
 GameObject:
@@ -740,6 +746,7 @@ MonoBehaviour:
   shadowResolution: 512
   shadowDimmer: 1
   shadowFadeDistance: 10000
+  contactShadows: 0
   viewBiasMin: 0.2
   viewBiasMax: 100
   viewBiasScale: 1
@@ -780,7 +787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 1
+  version: 1.1
   directionalIntensity: 3.1415927
   punctualIntensity: 300
   areaIntensity: 200
@@ -788,6 +795,7 @@ MonoBehaviour:
   m_InnerSpotPercent: 0
   lightDimmer: 1
   volumetricDimmer: 1
+  lightUnit: 0
   fadeDistance: 10000
   affectDiffuse: 1
   affectSpecular: 1
@@ -803,6 +811,8 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
+  displayLightIntensity: 300
+  displayAreaLightEmissiveMesh: 0
 --- !u!108 &1460356276
 Light:
   m_ObjectHideFlags: 0
@@ -851,7 +861,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 80, y: 0, z: 0}
 --- !u!1001 &1561752546
 Prefab:
@@ -890,7 +900,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7c6a39491205cff4090ecbf51db52090, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 7c6a39491205cff4090ecbf51db52090, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -979,7 +989,7 @@ Transform:
   m_Children:
   - {fileID: 1929862122}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1898287052
 GameObject:
@@ -1014,6 +1024,7 @@ MonoBehaviour:
   shadowResolution: 512
   shadowDimmer: 1
   shadowFadeDistance: 10000
+  contactShadows: 0
   viewBiasMin: 0.2
   viewBiasMax: 100
   viewBiasScale: 1
@@ -1052,7 +1063,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 1
+  version: 1.1
   directionalIntensity: 3.1415927
   punctualIntensity: 600
   areaIntensity: 4
@@ -1060,6 +1071,7 @@ MonoBehaviour:
   m_InnerSpotPercent: 0
   lightDimmer: 1
   volumetricDimmer: 1
+  lightUnit: 0
   fadeDistance: 10000
   affectDiffuse: 1
   affectSpecular: 1
@@ -1075,6 +1087,8 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
+  displayLightIntensity: 4
+  displayAreaLightEmissiveMesh: 0
 --- !u!108 &1898287055
 Light:
   m_ObjectHideFlags: 0
@@ -1123,7 +1137,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &1929862120
 GameObject:

@@ -96,10 +96,10 @@ void VoxelizerGeometry(
 
     // Deformation parameter
     float3 center_ws = GetAbsolutePositionWS(TransformObjectToWorld(center));
-    float param = dot(_EffectorPlane.xyz, center_ws);
-    param = 1 - param + _EffectorPlane.w;
+    float param = 1 - dot(_EffectorPlane.xyz, center_ws) + _EffectorPlane.w;
 
-    float param_prev = param - _EffectorPlane.w + _PrevEffectorPlane.w;
+    float3 center_ws_prev = GetAbsolutePositionWS(TransformObjectToWorld(center_prev));
+    float param_prev = 1 - dot(_PrevEffectorPlane.xyz, center_ws_prev) + _PrevEffectorPlane.w;
 
     // Pass through the vertices if deformation hasn't been started yet.
     if (param < 0)
@@ -124,13 +124,10 @@ void VoxelizerGeometry(
         float rand1 = Hash(seed + 1);
         float rand2 = Hash(seed + 5);
 
-        // Object space to world space conversion
-        center = GetAbsolutePositionWS(TransformObjectToWorld(center));
-
         // Cube position and scale
         float3 pos, pos_prev, scale, scale_prev;
-        CubePosScale(center, size, rand1, param, pos, scale);
-        CubePosScale(center_prev, size, rand1, param_prev, pos_prev, scale_prev);
+        CubePosScale(center_ws, size, rand1, param, pos, scale);
+        CubePosScale(center_ws_prev, size, rand1, param_prev, pos_prev, scale_prev);
 
         // Secondary animation parameters
         float morph = smoothstep(0, 0.25, param);

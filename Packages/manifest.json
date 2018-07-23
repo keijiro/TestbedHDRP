@@ -2,7 +2,7 @@
   "dependencies": {
     "com.unity.mathematics": "0.0.12-preview.10",
     "com.unity.package-manager-ui": "1.9.11",
-    "com.unity.render-pipelines.high-definition": "2.0.5-preview",
+    "com.unity.render-pipelines.high-definition": "3.0.0-preview",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.director": "1.0.0",
     "com.unity.modules.imgui": "1.0.0",

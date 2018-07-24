@@ -1,82 +1,88 @@
 // Spiralizer effect geometry shader
 // https://github.com/keijiro/TestbedHDRP
 
-#define SEGMENT_COUNT 16
+#define HINGE_COUNT 16
 
 float3 _BaseParams; // density, size, highlight probability
-float2 _AnimParams; // inflation, angle
+float2 _AnimParams; // inflation, rotation
 float2 _TimeParams; // current, previous
 float4x4 _EffSpace;
 float4 _EffPlaneC;
 float4 _EffPlaneP;
 
-// Calculate an animation parameter from an object space position.
-float AnimationParameter(float4 plane, float3 positionOS, uint primitiveID)
+// Convert a object-space position into the cylindrical coordinate system.
+// xyz = (radial distance, azimuthal angle, vertical height)
+float3 CylindricalCoord(float3 p)
 {
-    float3 positionWS = GetAbsolutePositionWS(TransformObjectToWorld(positionOS));
-    float param = dot(plane.xyz, positionWS) - plane.w;
-    float random = lerp(1, 1.5, Hash(primitiveID * 761)); // 50% distribution
+    p = mul((float3x3)_EffSpace, p);
+    return float3(length(p.xz), atan2(p.x, p.z), p.y);
+}
+
+// Hinging point data
+// p0: position of upper vertex
+// p1: position of lower vertex
+// n: normal vector
+struct Hinge { float3 p0, p1, n; };
+
+// Calculate a hinging point on a tape from parameters.
+Hinge GetHingeOnTape(float3 source_cyl, float tape_01, float anim_01)
+{
+    const float base_width = _BaseParams.y;
+    const float total_rotation = _AnimParams.y;
+
+    const half3 eff_x = _EffSpace[0].xyz;
+    const half3 eff_y = _EffSpace[1].xyz;
+    const half3 eff_z = _EffSpace[2].xyz;
+
+    // Azimuthal angle of the point
+    float rot_01 = smoothstep(0.5 * tape_01, 0.5 + 0.5 * tape_01, anim_01);
+    float rot_abs = source_cyl.y + total_rotation * rot_01;
+
+    // Normal vector of the point
+    float3 normal = eff_x * sin(rot_abs) + eff_z * cos(rot_abs);
+
+    // Midpoint of the hinge
+    float3 mid = normal * source_cyl.x + eff_y * source_cyl.z;
+
+    // Tape width at the point
+    float width = smoothstep(0, 0.5, min(tape_01, 1 - tape_01)) *
+                  smoothstep(0, 0.1, min( rot_01, 1 -  rot_01)) * base_width;
+
+    Hinge h;
+    h.p0 = mid - eff_y * width;
+    h.p1 = mid + eff_y * width;
+    h.n = normal;
+    return h;
+}
+
+// Calculate the animation parameter from an object space position.
+float AnimationParameter(float4 plane, float3 position_os, uint primitive_id)
+{
+    float3 wpos = GetAbsolutePositionWS(TransformObjectToWorld(position_os));
+    float param = dot(plane.xyz, wpos) - plane.w;
+    float random = lerp(1, 1.5, Hash(primitive_id * 761)); // 50% distribution
     return 1 - saturate(param * random);
 }
 
 // Vertex output from geometry
 PackedVaryingsType VertexOutput(
     AttributesMesh source,
-    float3 position, float3 position_prev, half3 normal,
-    half emission = 0, half random = 0, half2 qcoord = -1
+    float3 position, float3 prev_position, half3 normal,
+    half emission = 0, half random = 0, half tape_coord = 0.5
 )
 {
-    half4 color = half4(qcoord, emission, random);
-    return PackVertexData(source, position, position_prev, normal, color);
-}
-
-struct SpiralPoint
-{
-    float3 p0, p1, n;
-};
-
-float3 CylindricalCoord(float3 p)
-{
-    p = mul((float3x3)_EffSpace, p);
-    return float3(length(p.xz), atan2(p.x, p.z), p.y); // dist, azimuth, height
-}
-
-SpiralPoint GetSpiralPoint(float3 cyl_pos, float seg_param, float anim_param)
-{
-    const float Width = _BaseParams.y;
-    const float TotalAngle = _AnimParams.y;
-
-    const half3 Ax = _EffSpace[0].xyz;
-    const half3 Ay = _EffSpace[1].xyz;
-    const half3 Az = _EffSpace[2].xyz;
-
-    float angle_param = smoothstep(0.5 * seg_param, 0.5 + 0.5 * seg_param, anim_param);
-    float angle = cyl_pos.y + TotalAngle * angle_param;
-
-    float3 normal = Ax * sin(angle) + Az * cos(angle);
-
-    float width_param = smoothstep(0, 0.5, min(seg_param, 1 - seg_param));
-    width_param *= smoothstep(0, 0.1, min(angle_param, 1 - angle_param));
-    float width = Width * width_param;
-
-    SpiralPoint pt;
-    pt.p0 = normal * cyl_pos.x + Ay * (cyl_pos.z - width);
-    pt.p1 = normal * cyl_pos.x + Ay * (cyl_pos.z + width);
-    pt.n = normal;
-    return pt;
+    half4 color = half4(tape_coord, emission, random, 0);
+    return PackVertexData(source, position, prev_position, normal, color);
 }
 
 // Geometry shader function body
-[maxvertexcount(SEGMENT_COUNT * 2)]
+[maxvertexcount(HINGE_COUNT * 2)]
 void SpiralizerGeometry(
     uint pid : SV_PrimitiveID,
     triangle Attributes input[3],
     inout TriangleStream<PackedVaryingsType> outStream
 )
 {
-    const float Density = _BaseParams.x;
-    const float Highlight = _BaseParams.z;
-
     // Input vertices
     AttributesMesh v0 = ConvertToAttributesMesh(input[0]);
     AttributesMesh v1 = ConvertToAttributesMesh(input[1]);
@@ -124,7 +130,8 @@ void SpiralizerGeometry(
     }
 
     // Random selection
-    if (Hash(pid * 877) > Density)
+    const float density = _BaseParams.x;
+    if (Hash(pid * 877) > density)
     {
         // Not selected: Simple scaling during [0.05, 0.1]
         param_c = smoothstep(0, 0.1, param_c);
@@ -146,10 +153,9 @@ void SpiralizerGeometry(
     }
 
     // Triangle inflation (only visible at the beginning of the animation)
-    const float Inflation = _AnimParams.x * 10;
-
-    float inf_c = 1 + Inflation * smoothstep(0, 0.3, param_c);
-    float inf_p = 1 + Inflation * smoothstep(0, 0.3, param_p);
+    const float inflation = _AnimParams.x * 10;
+    float inf_c = 1 + inflation * smoothstep(0, 0.3, param_c);
+    float inf_p = 1 + inflation * smoothstep(0, 0.3, param_p);
 
     p0_c = lerp(center_c, p0_c, inf_c);
     p1_c = lerp(center_c, p1_c, inf_c);
@@ -159,44 +165,63 @@ void SpiralizerGeometry(
     p1_p = lerp(center_p, p1_p, inf_p);
     p2_p = lerp(center_p, p2_p, inf_p);
 
-    float3 cp_c = CylindricalCoord(center_c);
-    float3 cp_p = CylindricalCoord(center_p);
+    // Convert into the cylindrical coodinate system.
+    float3 center_cyl_c = CylindricalCoord(center_c);
+    float3 center_cyl_p = CylindricalCoord(center_p);
 
-    float ext = lerp(0, 2, Hash(pid * 701));
-    cp_c.x *= 1 + ext * param_c;
-    cp_p.x *= 1 + ext * param_p;
+    // Expansion (diffusion)
+    float expand = lerp(0, 2, Hash(pid * 701));
+    center_cyl_c.x *= 1 + expand * param_c;
+    center_cyl_p.x *= 1 + expand * param_p;
 
-    float intensity = smoothstep(0.0, 0.3, param_c) + smoothstep(0.1, 0.6, param_c);
-    // Pick some cells and stop their animation at 1.0 to highlight them.
-    intensity = min(intensity, Hash(pid * 329) < Highlight ? 1 : 2);
+    // Emission intensity animation
+    float em = smoothstep(0.0, 0.3, param_c) + smoothstep(0.1, 0.6, param_c);
 
+    // Pick some elements and stop their animation at 1.0 to highlight them.
+    const float highlight = _BaseParams.z;
+    em = min(em, Hash(pid * 329) < highlight ? 1 : 2);
+
+    // Random number to be given to the fragment shader
     float rand = Hash(pid * 227);
 
-    for (int i = 0; i < SEGMENT_COUNT; i++)
+    // Triangle to tape transformation parameter
+    half trans_c = smoothstep(0, 0.6, param_c);
+    half trans_p = smoothstep(0, 0.6, param_p);
+
+    // Devide the tape by (HINGE_COUNT) hinges.
+    for (int i = 0; i < HINGE_COUNT; i++)
     {
-        float seg_param = (float)i / SEGMENT_COUNT;
+        float tape_01 = (float)i / HINGE_COUNT;
 
-        SpiralPoint sp_c = GetSpiralPoint(cp_c, seg_param, param_c);
-        SpiralPoint sp_p = GetSpiralPoint(cp_p, seg_param, param_p);
+        // Hinge point
+        Hinge hinge_c = GetHingeOnTape(center_cyl_c, tape_01, param_c);
+        Hinge hinge_p = GetHingeOnTape(center_cyl_p, tape_01, param_p);
 
-        float3 tp0_c = lerp(p0_c, p1_c, seg_param);
-        float3 tp1_c = p2_c;
+        // Map the hinge vertices to the original triangle.
+        float3 tp0_c = lerp(p0_c, p1_c, tape_01); // uppter vertex
+        float3 tp0_p = lerp(p0_p, p1_p, tape_01);
+        float3 tp1_c = p2_c; // lower vertex
+        float3 tp1_p = p2_p;
 
-        float3 tp0_p = lerp(p0_c, p1_c, seg_param);
-        float3 tp1_p = p2_c;
+        // Uppter vertex
+        float3 up_c = lerp(tp0_c, hinge_c.p0, trans_c);
+        float3 up_p = lerp(tp0_p, hinge_p.p0, trans_p);
 
-        // Triangle to spiral transformation
-        half t2s_c = smoothstep(0, 0.6, param_c);
-        half t2s_p = smoothstep(0, 0.6, param_p);
+        // Lower vertex
+        float3 lo_c = lerp(tp1_c, hinge_c.p1, trans_c);
+        float3 lo_p = lerp(tp1_p, hinge_p.p1, trans_p);
 
-        tp0_c = lerp(tp0_c, sp_c.p0, t2s_c);
-        tp1_c = lerp(tp1_c, sp_c.p1, t2s_c);
-
-        tp0_p = lerp(tp0_p, sp_p.p0, t2s_p);
-        tp1_p = lerp(tp1_p, sp_p.p1, t2s_p);
-
-        outStream.Append(VertexOutput(v0, tp0_c, tp0_p, n0, intensity, rand, float2(0, 0.5)));
-        outStream.Append(VertexOutput(v1, tp1_c, tp1_p, n1, intensity, rand, float2(1, 0.5)));
+        // Output the hinge vertices
+        if (i < HINGE_COUNT - 1)
+        {
+            outStream.Append(VertexOutput(v1, up_c, up_p, n0, em, rand, 0));
+            outStream.Append(VertexOutput(v2, lo_c, lo_p, n1, em, rand, 1));
+        }
+        else
+        {
+            outStream.Append(VertexOutput(v0, up_c, up_p, n0, em, rand, 0));
+            outStream.Append(VertexOutput(v2, lo_c, lo_p, n1, em, rand, 1));
+        }
     }
 
     outStream.RestartStrip();

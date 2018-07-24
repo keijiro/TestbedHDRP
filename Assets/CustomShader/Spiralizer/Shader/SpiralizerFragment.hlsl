@@ -9,13 +9,13 @@ half _HueShift;
 // Self emission term (effect emission + edge detection)
 half3 SelfEmission(FragInputs input)
 {
-    half2 quad = input.color.xy;
-    half intensity = input.color.z; // 0:off -> 1:emission -> 2:edge
-    half random = input.color.w;
+    half tape = input.color.x;
+    half intensity = input.color.y; // 0:off -> 1:emission -> 2:edge
+    half random = input.color.z;
 
     // Edge detection
-    half2 edge2 = min(quad, 1 - quad) > fwidth(quad) * _EdgeWidth;
-    half edge = (1 - min(edge2.x, edge2.y)) * (quad.x >= 0);
+    half edge = min(tape, 1 - tape) > fwidth(tape) * _EdgeWidth;
+    edge = (1 - edge) * (tape >= 0);
 
     // Random hue shift
     half hueShift = (random - 0.5) * 2 * _HueShift;
@@ -58,7 +58,7 @@ void SpiralizerFragment(
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
 
     // Custom: Cancel the normal map while the effect is active.
-    float cancel = saturate(input.color.z);
+    float cancel = saturate(input.color.y);
     surfaceData.baseColor *= 1.0 - cancel;
     surfaceData.normalWS = lerp(surfaceData.normalWS, input.worldToTangent[2], cancel);
     surfaceData.tangentWS = lerp(surfaceData.tangentWS, input.worldToTangent[0], cancel);

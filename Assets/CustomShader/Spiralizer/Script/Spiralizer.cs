@@ -14,7 +14,7 @@ public sealed class Spiralizer : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField] float _size = 0.05f;
 
     [SerializeField] float _inflation = 1;
-    [SerializeField] float _swirl = 1;
+    [SerializeField] float _rotation = 1;
     [SerializeField] Transform _origin;
 
     [SerializeField, ColorUsage(false, true)] Color _emissionColor;
@@ -134,7 +134,7 @@ public sealed class Spiralizer : MonoBehaviour, ITimeControl, IPropertyPreview
         if (Mathf.Abs(_prevTime - time) > 100) _prevTime = time;
 
         var bparams = new Vector3(_density, _size, _highlight);
-        var aparams = new Vector3(_inflation, _swirl);
+        var aparams = new Vector3(_inflation, _rotation);
         var tparams = new Vector2(time, _prevTime);
         var espace = _origin != null ? _origin.worldToLocalMatrix : Matrix4x4.identity;
         var emission = ColorToHsvm(_emissionColor);
@@ -183,7 +183,8 @@ public sealed class Spiralizer : MonoBehaviour, ITimeControl, IPropertyPreview
         if (_origin != null)
         {
             Gizmos.color = new Color(1, 0, 0, 0.5f * opacity);
-            Gizmos.DrawWireSphere(_origin.position, 0.1f);
+            Gizmos.matrix = _origin.localToWorldMatrix;
+            Gizmos.DrawWireSphere(Vector3.zero, 0.1f);
         }
 
         Gizmos.color = new Color(1, 1, 0, 0.5f * opacity);

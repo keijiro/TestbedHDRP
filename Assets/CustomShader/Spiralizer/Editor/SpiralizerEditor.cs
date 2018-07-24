@@ -9,7 +9,7 @@ sealed class SpiralizerEditor : Editor
     SerializedProperty _size;
 
     SerializedProperty _inflation;
-    SerializedProperty _swirl;
+    SerializedProperty _rotation;
     SerializedProperty _origin;
 
     SerializedProperty _emissionColor;
@@ -31,7 +31,7 @@ sealed class SpiralizerEditor : Editor
         _size = serializedObject.FindProperty("_size");
 
         _inflation = serializedObject.FindProperty("_inflation");
-        _swirl = serializedObject.FindProperty("_swirl");
+        _rotation = serializedObject.FindProperty("_rotation");
         _origin = serializedObject.FindProperty("_origin");
 
         _emissionColor = serializedObject.FindProperty("_emissionColor");
@@ -75,7 +75,7 @@ sealed class SpiralizerEditor : Editor
         EditorGUILayout.LabelField("Animation", EditorStyles.boldLabel);
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(_inflation);
-        EditorGUILayout.PropertyField(_swirl);
+        EditorGUILayout.PropertyField(_rotation);
         EditorGUILayout.PropertyField(_origin);
         EditorGUI.indentLevel--;
 

@@ -60,7 +60,7 @@ float AnimationParameter(float4 plane, float3 position_os, uint primitive_id)
 {
     float3 wpos = GetAbsolutePositionWS(TransformObjectToWorld(position_os));
     float param = dot(plane.xyz, wpos) - plane.w;
-    float random = lerp(1, 1.5, Hash(primitive_id * 761)); // 50% distribution
+    float random = lerp(1, 1.25, Hash(primitive_id * 761)); // 25% distribution
     return 1 - saturate(param * random);
 }
 
@@ -145,9 +145,9 @@ void SpiralizerGeometry(
         p1_p = lerp(p1_p, center_p, param_p);
         p2_p = lerp(p2_p, center_p, param_p);
 
-        outStream.Append(VertexOutput(v0, p0_c, p0_p, n0));
-        outStream.Append(VertexOutput(v1, p1_c, p1_p, n1));
-        outStream.Append(VertexOutput(v2, p2_c, p2_p, n2));
+        outStream.Append(VertexOutput(v0, p0_c, p0_p, n0, param_c));
+        outStream.Append(VertexOutput(v1, p1_c, p1_p, n1, param_c));
+        outStream.Append(VertexOutput(v2, p2_c, p2_p, n2, param_c));
         outStream.RestartStrip();
         return;
     }

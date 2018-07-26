@@ -1,18 +1,18 @@
 [submodule "Packages/jp.keijiro.test-assets"]
 	path = Packages/jp.keijiro.test-assets
-	url = git@github.com:keijiro/jp.keijiro.test-assets.git
+	url = https://github.com/keijiro/jp.keijiro.test-assets.git
 [submodule "Packages/jp.keijiro.danish-statues"]
 	path = Packages/jp.keijiro.danish-statues
-	url = git@github.com:keijiro/DanishStatues.git
+	url = https://github.com/keijiro/DanishStatues.git
 	branch = upm
 [submodule "Packages/jp.keijiro.beta"]
 	path = Packages/jp.keijiro.beta
-	url = git@github.com:keijiro/jp.keijiro.beta.git
+	url = https://github.com/keijiro/jp.keijiro.beta.git
 [submodule "Packages/jp.keijiro.cmu-mocap"]
 	path = Packages/jp.keijiro.cmu-mocap
-	url = git@github.com:keijiro/CMUMocap.git
+	url = https://github.com/keijiro/CMUMocap.git
 	branch = upm
 [submodule "Packages/jp.keijiro.kino.post-processing"]
 	path = Packages/jp.keijiro.kino.post-processing
-	url = git@github.com:keijiro/Kino.git
+	url = https://github.com/keijiro/Kino.git
 	branch = upm

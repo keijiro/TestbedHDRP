@@ -4,7 +4,7 @@
 // Most parts of this shader are simply copy-pasted from the HDRP Lit shader.
 // See "Custom:" for modifications from the original shader.
 
-Shader "Custom/Particle System/Color to Emission"
+Shader "Custom/Lit Particle/Color to Emission"
 {
     Properties
     {

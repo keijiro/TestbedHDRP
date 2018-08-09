@@ -16,3 +16,7 @@
 	path = Packages/jp.keijiro.kino.post-processing
 	url = https://github.com/keijiro/Kino.git
 	branch = upm
+[submodule "Packages/jp.keijiro.dabrovic-sponza"]
+	path = Packages/jp.keijiro.dabrovic-sponza
+	url = https://github.com/keijiro/DabrovicSponza.git
+	branch = upm

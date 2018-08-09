@@ -12,9 +12,48 @@ MonoBehaviour:
   m_Name: Volume
   m_EditorClassIdentifier: 
   components:
-  - {fileID: 114738788963051612}
-  - {fileID: 114435313952887564}
---- !u!114 &114435313952887564
+  - {fileID: 114481876560951900}
+  - {fileID: 114610719217014480}
+  - {fileID: 114862180409517320}
+--- !u!114 &114481876560951900
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b145d2b9ee1ac4f846968484e7485a, type: 3}
+  m_Name: ContactShadows
+  m_EditorClassIdentifier: 
+  active: 1
+  enable:
+    m_OverrideState: 1
+    m_Value: 1
+  length:
+    m_OverrideState: 1
+    m_Value: 0.25
+    min: 0
+    max: 1
+  distanceScaleFactor:
+    m_OverrideState: 0
+    m_Value: 0.5
+    min: 0
+    max: 1
+  maxDistance:
+    m_OverrideState: 0
+    m_Value: 50
+    min: 0
+  fadeDistance:
+    m_OverrideState: 0
+    m_Value: 5
+    min: 0
+  sampleCount:
+    m_OverrideState: 0
+    m_Value: 8
+    min: 4
+    max: 64
+--- !u!114 &114610719217014480
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28,11 +67,11 @@ MonoBehaviour:
   active: 1
   skyType:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 2
   fogType:
     m_OverrideState: 0
     m_Value: 0
---- !u!114 &114738788963051612
+--- !u!114 &114862180409517320
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,8 +79,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: HDRISky
+  m_Script: {fileID: 11500000, guid: 3df29e7cc05fbec4aa43e06ea875565d, type: 3}
+  m_Name: ProceduralSky
   m_EditorClassIdentifier: 
   active: 1
   rotation:
@@ -50,8 +89,8 @@ MonoBehaviour:
     min: 0
     max: 360
   exposure:
-    m_OverrideState: 1
-    m_Value: -1
+    m_OverrideState: 0
+    m_Value: 0
   multiplier:
     m_OverrideState: 0
     m_Value: 1
@@ -63,6 +102,33 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
     min: 0
-  hdriSky:
+  sunSize:
+    m_OverrideState: 0
+    m_Value: 0.04
+    min: 0
+    max: 1
+  sunSizeConvergence:
+    m_OverrideState: 0
+    m_Value: 5
+    min: 1
+    max: 10
+  atmosphereThickness:
     m_OverrideState: 1
-    m_Value: {fileID: 8900000, guid: fb091b3711f1ec24594c75b5fa9e2016, type: 3}
+    m_Value: 0
+    min: 0
+    max: 5
+  skyTint:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  groundColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.7735849, g: 0.715497, b: 0.6604664, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  enableSunDisk:
+    m_OverrideState: 1
+    m_Value: 0

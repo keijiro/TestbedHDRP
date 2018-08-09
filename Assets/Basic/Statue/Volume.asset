@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Name: Volume
   m_EditorClassIdentifier: 
   components:
-  - {fileID: 114481876560951900}
+  - {fileID: 114117022994225960}
   - {fileID: 114610719217014480}
   - {fileID: 114862180409517320}
---- !u!114 &114481876560951900
+--- !u!114 &114117022994225960
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -32,7 +32,7 @@ MonoBehaviour:
     m_Value: 1
   length:
     m_OverrideState: 1
-    m_Value: 0.25
+    m_Value: 0.075
     min: 0
     max: 1
   distanceScaleFactor:
@@ -49,8 +49,8 @@ MonoBehaviour:
     m_Value: 5
     min: 0
   sampleCount:
-    m_OverrideState: 0
-    m_Value: 8
+    m_OverrideState: 1
+    m_Value: 20
     min: 4
     max: 64
 --- !u!114 &114610719217014480
@@ -89,8 +89,8 @@ MonoBehaviour:
     min: 0
     max: 360
   exposure:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 0.12
   multiplier:
     m_OverrideState: 0
     m_Value: 1
@@ -114,18 +114,18 @@ MonoBehaviour:
     max: 10
   atmosphereThickness:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1.1
     min: 0
     max: 5
   skyTint:
     m_OverrideState: 1
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
     hdr: 0
     showAlpha: 1
     showEyeDropper: 1
   groundColor:
     m_OverrideState: 1
-    m_Value: {r: 0.7735849, g: 0.715497, b: 0.6604664, a: 1}
+    m_Value: {r: 1, g: 0.9375577, b: 0.85490197, a: 1}
     hdr: 0
     showAlpha: 1
     showEyeDropper: 1

@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.3490566, g: 0.2980552, b: 0.2749644, a: 1}
   m_AmbientEquatorColor: {r: 0, g: 0, b: 0, a: 1}
   m_AmbientGroundColor: {r: 0, g: 0, b: 0, a: 1}
-  m_AmbientIntensity: 0
+  m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 1
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 0
+  m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 0}
+  m_IndirectSpecularColor: {r: 0.020845361, g: 0.023168113, b: 0.023655381, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -139,7 +139,7 @@ Transform:
   m_GameObject: {fileID: 66376113}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8.75, y: 2, z: -5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 3
@@ -222,7 +222,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &66376117
 Light:
@@ -233,9 +233,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -359,7 +359,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 40
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &199205374
 Light:
@@ -371,7 +371,7 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 0.48584908, g: 0.6469102, b: 1, a: 1}
-  m_Intensity: 1.5915494
+  m_Intensity: 3.1830988
   m_Range: 0.7
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -587,7 +587,7 @@ Transform:
   m_GameObject: {fileID: 330748399}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4.5, y: 2, z: 5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 6
@@ -670,7 +670,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &330748403
 Light:
@@ -681,9 +681,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -785,7 +785,7 @@ Transform:
   m_GameObject: {fileID: 499019899}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4.5, y: 2, z: -5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 5
@@ -868,7 +868,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &499019903
 Light:
@@ -879,9 +879,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -987,7 +987,7 @@ Transform:
   m_GameObject: {fileID: 612827265}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8.75, y: 2, z: 5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 4
@@ -1070,7 +1070,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &612827269
 Light:
@@ -1081,9 +1081,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -1135,7 +1135,7 @@ Transform:
   m_GameObject: {fileID: 644370825}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 14.5, y: 2, z: 5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 2
@@ -1218,7 +1218,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &644370829
 Light:
@@ -1229,9 +1229,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -1536,7 +1536,7 @@ Transform:
   m_GameObject: {fileID: 1220264087}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 14.5, y: 2, z: -5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 1
@@ -1619,7 +1619,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &1220264091
 Light:
@@ -1630,9 +1630,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -1695,9 +1695,9 @@ MonoBehaviour:
   antialiasingMode: 3
   temporalAntialiasing:
     jitterSpread: 0.75
-    sharpness: 0.25
-    stationaryBlending: 0.95
-    motionBlending: 0.85
+    sharpness: 0.2
+    stationaryBlending: 0.99
+    motionBlending: 0.99
   subpixelMorphologicalAntialiasing:
     quality: 2
   fastApproximateAntialiasing:
@@ -2068,7 +2068,7 @@ Transform:
   m_GameObject: {fileID: 1411666441}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 14.5, y: 2, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 0
@@ -2151,7 +2151,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &1411666445
 Light:
@@ -2162,9 +2162,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -2272,6 +2272,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1453787957}
   - component: {fileID: 1453787956}
+  - component: {fileID: 1453787958}
   m_Layer: 8
   m_Name: Volume
   m_TagString: Untagged
@@ -2308,6 +2309,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1453787958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1453787955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441482e8936e35048a1dffac814e3ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Profile: {fileID: 11400000, guid: d06fd3a084bc5284688523cd25c071bd, type: 2}
+  m_BakingSkyUniqueID: 2
 --- !u!1001 &1597277631
 Prefab:
   m_ObjectHideFlags: 0
@@ -2454,7 +2468,7 @@ Transform:
   m_GameObject: {fileID: 1872300449}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: -5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 7
@@ -2537,7 +2551,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &1872300453
 Light:
@@ -2548,9 +2562,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -2602,7 +2616,7 @@ Transform:
   m_GameObject: {fileID: 1964606270}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_Children: []
   m_Father: {fileID: 1793891656}
   m_RootOrder: 8
@@ -2685,7 +2699,7 @@ MonoBehaviour:
   useOldInspector: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 20
+  displayLightIntensity: 33
   displayAreaLightEmissiveMesh: 0
 --- !u!108 &1964606274
 Light:
@@ -2696,9 +2710,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.7783019, g: 0.93643266, b: 1, a: 1}
-  m_Intensity: 1.5915494
-  m_Range: 3
+  m_Color: {r: 0.7764706, g: 0.9440282, b: 1, a: 1}
+  m_Intensity: 2.6260564
+  m_Range: 3.2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:

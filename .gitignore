@@ -11,3 +11,5 @@ Desktop.ini
 # Unity
 /Library
 /Temp
+/*.csproj
+/*.sln

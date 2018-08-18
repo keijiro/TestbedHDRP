@@ -1,0 +1,4 @@
+The texture files contained in this directory were obtained from CC0 Textures
+by StruffelProductions. Please refer to the following site for further details.
+
+https://cc0textures.com

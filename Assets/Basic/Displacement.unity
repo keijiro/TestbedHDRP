@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 279114670}
   - component: {fileID: 279114669}
   m_Layer: 8
-  m_Name: GameObject
+  m_Name: PostFx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -32,3 +32,29 @@ If you're using Git from the command line, please run `git submodule init` and
 can just use the `--recursive` option when initially cloning the repository.
 
 [submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
+Acknowledgements
+----------------
+
+- The statues models used in the examples were scanned by Geoffrey Marchal. See
+  the following page for further information.
+
+  https://github.com/keijiro/DanishStatues
+
+- The "Sponza" scene model was originally created by Marko Dabrovic and
+  retouched by Kenzie Lamar and Morgan McGuire. See the following page for
+  further information.
+
+  https://github.com/keijiro/DabrovicSponza
+
+- The photogrammetric textures used in displacement mapping examples were
+  created by StruffelProductions. See the CC0Textures project page for further
+  information.
+
+  https://cc0textures.com
+
+- The animation data used in the motion blur examples were captured by the
+  Carnegie Mellon University Motion Capture Database project. See the following
+  page for further information.
+
+  https://github.com/keijiro/CMUMocap

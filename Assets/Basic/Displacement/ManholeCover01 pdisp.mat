@@ -179,8 +179,8 @@ Material:
     - _NormalMapSpace: 0
     - _NormalScale: 1
     - _PPDLodThreshold: 5
-    - _PPDMaxSamples: 15
-    - _PPDMinSamples: 5
+    - _PPDMaxSamples: 16
+    - _PPDMinSamples: 14
     - _PPDPrimitiveLength: 1
     - _PPDPrimitiveWidth: 1
     - _PreRefractionPass: 0

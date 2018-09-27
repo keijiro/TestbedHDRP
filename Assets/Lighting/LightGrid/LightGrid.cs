@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 public class LightGrid : MonoBehaviour
 {
-    [SerializeField] Light _template;
+    [SerializeField] Light _template = null;
     [SerializeField] int _rows = 5;
     [SerializeField] int _columns = 5;
     [SerializeField] float _interval = 0.2f;

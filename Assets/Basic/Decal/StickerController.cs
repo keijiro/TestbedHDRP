@@ -4,8 +4,8 @@ using HDRP = UnityEngine.Experimental.Rendering.HDPipeline;
 
 public class StickerController : MonoBehaviour
 {
-    [SerializeField] Texture [] _textures;
-    [SerializeField] GameObject _template;
+    [SerializeField] Texture [] _textures = null;
+    [SerializeField] GameObject _template = null;
     [SerializeField] int _stickerCount = 64;
     [SerializeField] float _yRange = 1;
     [SerializeField] float _interval = 4;

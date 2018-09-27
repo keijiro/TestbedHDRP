@@ -36,7 +36,6 @@ half3 SelfEmission(FragInputs input)
 void TransporterFragment(
             PackedVaryingsToPS packedInput,
             OUTPUT_GBUFFER(outGBuffer)
-            OUTPUT_GBUFFER_SHADOWMASK(outShadowMaskBuffer)
             #ifdef _DEPTHOFFSET_ON
             , out float outputDepth : SV_Depth
             #endif
@@ -50,7 +49,8 @@ void TransporterFragment(
 #ifdef VARYINGS_NEED_POSITION_WS
     float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
 #else
-    float3 V = 0; // Avoid the division by 0
+    // Unused
+    float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
 #endif
 
     SurfaceData surfaceData;
@@ -63,21 +63,14 @@ void TransporterFragment(
     surfaceData.normalWS = lerp(surfaceData.normalWS, input.worldToTangent[2], cancel);
     surfaceData.tangentWS = lerp(surfaceData.tangentWS, input.worldToTangent[0], cancel);
 
+    // Custom: Add the self emission term.
+    builtinData.bakeDiffuseLighting += SelfEmission(input);
+
 #ifdef DEBUG_DISPLAY
     ApplyDebugToSurfaceData(input.worldToTangent, surfaceData);
 #endif
 
-    BSDFData bsdfData = ConvertSurfaceDataToBSDFData(input.positionSS.xy, surfaceData);
-
-    PreLightData preLightData = GetPreLightData(V, posInput, bsdfData);
-
-    float3 bakeDiffuseLighting = GetBakedDiffuseLighting(surfaceData, builtinData, bsdfData, preLightData);
-
-    // Custom: Add the self emission term.
-    bakeDiffuseLighting += SelfEmission(input);
-
-    ENCODE_INTO_GBUFFER(surfaceData, bakeDiffuseLighting, posInput.positionSS, outGBuffer);
-    ENCODE_SHADOWMASK_INTO_GBUFFER(float4(builtinData.shadowMask0, builtinData.shadowMask1, builtinData.shadowMask2, builtinData.shadowMask3), outShadowMaskBuffer);
+    ENCODE_INTO_GBUFFER(surfaceData, builtinData, posInput.positionSS, outGBuffer);
 
 #ifdef _DEPTHOFFSET_ON
     outputDepth = posInput.deviceDepth;

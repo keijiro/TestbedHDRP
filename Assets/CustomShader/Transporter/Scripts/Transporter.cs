@@ -13,18 +13,18 @@ public sealed class Transporter : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField, Range(0, 1)] float _cellDensity = 0.05f;
     [SerializeField] float _cellSize = 0.1f;
 
-    [SerializeField] Transform _origin;
+    [SerializeField] Transform _origin = null;
     [SerializeField] float _inflation = 1;
     [SerializeField] float _swirl = 1;
     [SerializeField] float _scatter = 1;
 
-    [SerializeField, ColorUsage(false, true)] Color _emissionColor;
-    [SerializeField, ColorUsage(false, true)] Color _edgeColor;
+    [SerializeField, ColorUsage(false, true)] Color _emissionColor = Color.black;
+    [SerializeField, ColorUsage(false, true)] Color _edgeColor = Color.white;
     [SerializeField, Range(0, 8)] float _edgeWidth = 1;
-    [SerializeField, Range(0, 1)] float _hueShift;
+    [SerializeField, Range(0, 1)] float _hueShift = 0;
     [SerializeField, Range(0, 1)] float _highlight = 0.2f;
 
-    [SerializeField] Renderer[] _renderers;
+    [SerializeField] Renderer[] _renderers = null;
 
     void OnValidate()
     {

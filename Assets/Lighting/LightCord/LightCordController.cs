@@ -8,7 +8,7 @@ public class LightCordController : MonoBehaviour
     [SerializeField] int _segmentCount = 20;
     [SerializeField] int _verticesPerSegment = 5;
     [SerializeField] float _radius = 1;
-    [SerializeField] Material _material;
+    [SerializeField] Material _material = null;
     [Space]
     [SerializeField] float3 _lissajous = (float3)1;
     [SerializeField] float3 _palette1 = (float3)0.1f;
@@ -18,7 +18,7 @@ public class LightCordController : MonoBehaviour
     [SerializeField] float _noiseMotion = 0.5f;
     [SerializeField] float _noiseAmplitude = 0.01f;
     [Space]
-    [SerializeField] Light _lightTemplate;
+    [SerializeField] Light _lightTemplate = null;
 
     Vector3 [] _vertices;
     Color [] _colors;

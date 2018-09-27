@@ -15,12 +15,12 @@ public sealed class Voxelizer : MonoBehaviour, ITimeControl, IPropertyPreview
     [SerializeField, Range(0, 1000)] float _fallDistance = 1;
     [SerializeField, Range(0, 10)] float _fluctuation = 1;
 
-    [SerializeField, ColorUsage(false, true)] Color _emissionColor1;
-    [SerializeField, ColorUsage(false, true)] Color _emissionColor2;
-    [SerializeField, ColorUsage(false, true)] Color _transitionColor;
-    [SerializeField, ColorUsage(false, true)] Color _lineColor;
+    [SerializeField, ColorUsage(false, true)] Color _emissionColor1 = Color.black;
+    [SerializeField, ColorUsage(false, true)] Color _emissionColor2 = Color.black;
+    [SerializeField, ColorUsage(false, true)] Color _transitionColor = Color.white;
+    [SerializeField, ColorUsage(false, true)] Color _lineColor = Color.white;
 
-    [SerializeField] Renderer[] _renderers;
+    [SerializeField] Renderer[] _renderers = null;
 
     #endregion
 

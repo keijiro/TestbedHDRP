@@ -3,7 +3,7 @@
 public class LightBarController : MonoBehaviour
 {
     [Space]
-    [SerializeField] GameObject _template;
+    [SerializeField] GameObject _template = null;
     [SerializeField] uint _instanceCount = 10;
     [SerializeField] uint _randomSeed = 0;
     [Space]

@@ -1,15 +1,21 @@
 {
   "dependencies": {
-    "com.unity.mathematics": "0.0.12-preview.17",
-    "com.unity.package-manager-ui": "2.0.1",
-    "com.unity.render-pipelines.high-definition": "3.3.0-preview",
+    "com.unity.analytics": "3.0.9",
+    "com.unity.mathematics": "0.0.12-preview.19",
+    "com.unity.package-manager-ui": "2.0.2",
+    "com.unity.render-pipelines.high-definition": "4.0.1-preview",
     "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.audio": "1.0.0",
     "com.unity.modules.director": "1.0.0",
     "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0",
     "com.unity.modules.particlesystem": "1.0.0",
     "com.unity.modules.physics": "1.0.0",
-    "com.unity.modules.ui": "1.0.0",
+    "com.unity.modules.unityanalytics": "1.0.0",
+    "com.unity.modules.unitywebrequest": "1.0.0",
+    "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
+    "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
   }
 }

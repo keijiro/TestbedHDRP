@@ -18,20 +18,17 @@ features.
 System requirements
 -------------------
 
-- Unity 2018.2 or later
+- Unity 2018.3 or later
 
-How to use the project
-----------------------
+This project uses [Git support on Package Manager] to import external packages.
+To enable the functionality, [Git] must be installed on the system. See
+[the forum thread][Git support on Package Manager] for futher details.
 
-This repository includes some [submodules]. Before opening the project with
-Unity, not only the repository itself but also these submodules have to be
-synced up.
+[Git support on Package Manager]:
+    https://forum.unity.com/threads/git-support-on-package-manager.573673/
+[Git]: https://git-scm.com/downloads
 
-If you're using Git from the command line, please run `git submodule init` and
-`git submodule update` in the project directory to sync the submodules. Or you
-can just use the `--recursive` option when initially cloning the repository.
-
-[submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+<!--4567890123456789012345678901234567890123456789012345678901234567890123456-->
 
 Acknowledgements
 ----------------

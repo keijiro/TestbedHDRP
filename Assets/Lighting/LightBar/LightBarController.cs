@@ -24,7 +24,7 @@ public class LightBarController : MonoBehaviour
             _bars[i].GetComponent<Light>().color =
                 Color.HSVToRGB(Random.Value01(i + _randomSeed + 4000u), 0.8f, 1);
             _bars[i].GetComponentInChildren<Renderer>().material.SetColor("_EmissiveColor",
-                Color.HSVToRGB(Random.Value01(i + _randomSeed + 4000u), 0.8f, 1) * 2.5f);
+                Color.HSVToRGB(Random.Value01(i + _randomSeed + 4000u), 0.8f, 1) * 5);
         }
         Destroy(_template);
     }

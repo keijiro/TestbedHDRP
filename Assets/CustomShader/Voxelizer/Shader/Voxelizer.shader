@@ -1,10 +1,10 @@
-﻿// Transportation effect custom shader
+// Voxelizer effect custom shader
 // https://github.com/keijiro/TestbedHDRP
 //
 // Most parts of this shader are simply copy-pasted from the HDRP Lit shader.
 // See "Custom:" for modifications from the original shader.
 
-Shader "Transporter"
+Shader "Voxelizer"
 {
     Properties
     {
@@ -19,7 +19,7 @@ Shader "Transporter"
         _BaseColorMap("BaseColorMap", 2D) = "white" {}
 
         _Metallic("_Metallic", Range(0.0, 1.0)) = 0
-        _Smoothness("Smoothness", Range(0.0, 1.0)) = 1.0
+        _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
         _MaskMap("MaskMap", 2D) = "white" {}
         _SmoothnessRemapMin("SmoothnessRemapMin", Float) = 0.0
         _SmoothnessRemapMax("SmoothnessRemapMax", Float) = 1.0
@@ -116,7 +116,7 @@ Shader "Transporter"
         _TransparentSortPriority("_TransparentSortPriority", Float) = 0
 
         // Transparency
-        [Enum(None, 0, Plane, 1, Sphere, 2)]_RefractionModel("Refraction Model", Int) = 0
+        [Enum(None, 0, Box, 1, Sphere, 2)]_RefractionModel("Refraction Model", Int) = 0
         [Enum(Proxy, 1, HiZ, 2)]_SSRefractionProjectionModel("Refraction Projection Model", Int) = 0
         _Ior("Index Of Refraction", Range(1.0, 2.5)) = 1.0
         _ThicknessMultiplier("Thickness Multiplier", Float) = 1.0
@@ -209,9 +209,7 @@ Shader "Transporter"
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 
         [ToggleUI] _SupportDecals("Support Decals", Float) = 1.0
-
-        // this will let collapsable element of material be persistant
-        [HideInInspector] _EditorExpendedAreas("_EditorExpendedAreas", Float) = 0
+        [ToggleUI] _ReceivesSSR("Receives SSR", Float) = 1.0
     }
 
     HLSLINCLUDE
@@ -235,7 +233,6 @@ Shader "Transporter"
     #pragma shader_feature _PIXEL_DISPLACEMENT_LOCK_OBJECT_SCALE
     #pragma shader_feature _VERTEX_WIND
     #pragma shader_feature _ _REFRACTION_PLANE _REFRACTION_SPHERE
-    #pragma shader_feature _ _REFRACTION_SSRAY_PROXY _REFRACTION_SSRAY_HIZ
 
     #pragma shader_feature _ _EMISSIVE_MAPPING_PLANAR _EMISSIVE_MAPPING_TRIPLANAR
     #pragma shader_feature _ _MAPPING_PLANAR _MAPPING_TRIPLANAR
@@ -258,6 +255,7 @@ Shader "Transporter"
     #pragma shader_feature _TRANSMITTANCECOLORMAP
 
     #pragma shader_feature _DISABLE_DECALS
+    #pragma shader_feature _DISABLE_SSR
     #pragma shader_feature _ENABLE_GEOMETRIC_SPECULAR_AA
 
     // Keyword for transparent
@@ -285,7 +283,6 @@ Shader "Transporter"
     // Define
     //-------------------------------------------------------------------------------------
 
-    #define UNITY_MATERIAL_LIT // Need to be define before including Material.hlsl
     // Use surface gradient normal mapping as it handle correctly triplanar normal mapping and multiple UVSet
     #define SURFACE_GRADIENT
     // This shader support vertex modification
@@ -304,13 +301,24 @@ Shader "Transporter"
     #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Wind.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/FragInputs.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPass.cs.hlsl"
-
+    // #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
 
     //-------------------------------------------------------------------------------------
     // variable declaration
     //-------------------------------------------------------------------------------------
 
+    // Can't include 'ShaderVariables.hlsl' here because of USE_LEGACY_UNITY_MATRIX_VARIABLES. :-(
+    // Same story for 'Material.hlsl' (above) which includes 'AtmosphericScattering.hlsl' which includes 'ShaderVariables.hlsl'.
+    // #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+    // #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.cs.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitProperties.hlsl"
+
+    // TODO:
+    // Currently, Lit.hlsl and LitData.hlsl are included for every pass. Split Lit.hlsl in two:
+    // LitData.hlsl and LitShading.hlsl (merge into the existing LitData.hlsl).
+    // LitData.hlsl should be responsible for preparing shading parameters.
+    // LitShading.hlsl implements the light loop API.
+    // LitData.hlsl is included here, LitShading.hlsl is included below for shading passes only.
 
     // All our shaders use same name for entry point
     // Custom: No. We use different names.
@@ -361,24 +369,25 @@ Shader "Transporter"
 
             #define SHADERPASS SHADERPASS_GBUFFER
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
             #ifdef DEBUG_DISPLAY
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
             #endif
-            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
-            // Custom: File path normalization
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
+
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassGBuffer.hlsl"
 
             // Custom: Geometry and fragment shader implementation
             #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
-            #include "TransporterGeometry.hlsl"
-            #include "TransporterFragment.hlsl"
+            #include "VoxelizerGeometry.hlsl"
+            #include "VoxelizerFragment.hlsl"
 
             // Custom: Shader entry points
             #pragma vertex VertexThru
-            #pragma geometry TransporterGeometry
-            #pragma fragment TransporterFragment
+            #pragma geometry VoxelizerGeometry
+            #pragma fragment VoxelizerFragment
 
             ENDHLSL
         }
@@ -404,18 +413,18 @@ Shader "Transporter"
             #define USE_LEGACY_UNITY_MATRIX_VARIABLES
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
-            // Custom: File path normalization
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitDepthPass.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
             #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
-            #include "TransporterGeometry.hlsl"
+            #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points
             #pragma vertex VertexThru
-            #pragma geometry TransporterGeometry
+            #pragma geometry VoxelizerGeometry
             #pragma fragment Frag
 
             ENDHLSL
@@ -427,6 +436,15 @@ Shader "Transporter"
             Tags{ "LightMode" = "DepthOnly" }
 
             Cull[_CullMode]
+
+            // To be able to tag stencil with disableSSR information for forward
+            Stencil
+            {
+                WriteMask [_StencilWriteMask]
+                Ref [_StencilRef]
+                Comp Always
+                Pass Replace
+            }
 
             ZWrite On
 
@@ -440,8 +458,8 @@ Shader "Transporter"
             #define SHADERPASS SHADERPASS_DEPTH_ONLY
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
 
-            // Custom: File path normalization
             #ifdef WRITE_NORMAL_BUFFER // If enabled we need all regular interpolator
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
             #else
@@ -453,11 +471,11 @@ Shader "Transporter"
 
             // Custom: Geometry shader implementation
             #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
-            #include "TransporterGeometry.hlsl"
+            #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points
             #pragma vertex VertexThru
-            #pragma geometry TransporterGeometry
+            #pragma geometry VoxelizerGeometry
             #pragma fragment Frag
 
             ENDHLSL
@@ -488,7 +506,7 @@ Shader "Transporter"
             #define SHADERPASS SHADERPASS_VELOCITY
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
-            // Custom: File path normalization
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #ifdef WRITE_NORMAL_BUFFER // If enabled we need all regular interpolator
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
             #else
@@ -504,11 +522,11 @@ Shader "Transporter"
 
             // Custom: Geometry shader implementation
             #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
-            #include "TransporterGeometry.hlsl"
+            #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points
             #pragma vertex VertexThru
-            #pragma geometry TransporterGeometry
+            #pragma geometry VoxelizerGeometry
             #pragma fragment Frag
 
             ENDHLSL

@@ -2,7 +2,7 @@
   "dependencies": {
     "com.unity.mathematics": "0.0.12-preview.19",
     "com.unity.package-manager-ui": "2.0.3",
-    "com.unity.render-pipelines.high-definition": "4.1.0-preview",
+    "com.unity.render-pipelines.high-definition": "4.6.0-preview",
     "jp.keijiro.beta": "https://github.com/keijiro/jp.keijiro.beta.git",
     "jp.keijiro.cmu-mocap": "https://github.com/keijiro/CMUMocap.git#upm",
     "jp.keijiro.dabrovic-sponza": "https://github.com/keijiro/DabrovicSponza.git#upm",

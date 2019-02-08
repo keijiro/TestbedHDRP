@@ -55,3 +55,10 @@ Acknowledgements
   page for further information.
 
   https://github.com/keijiro/CMUMocap
+
+License
+-------
+
+The script/shader files contained in this repository are licensed under [CC0].
+
+[CC0]: https://creativecommons.org/publicdomain/zero/1.0/

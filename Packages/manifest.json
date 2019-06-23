@@ -1,21 +1,23 @@
 {
   "dependencies": {
-    "com.unity.mathematics": "0.0.12-preview.19",
-    "com.unity.package-manager-ui": "2.0.3",
-    "com.unity.render-pipelines.high-definition": "4.6.0-preview",
+    "com.unity.mathematics": "1.0.1",
+    "com.unity.package-manager-ui": "2.1.2",
+    "com.unity.render-pipelines.high-definition": "5.16.1-preview",
+    "com.unity.timeline": "1.0.0",
     "jp.keijiro.beta": "https://github.com/keijiro/jp.keijiro.beta.git",
     "jp.keijiro.cmu-mocap": "https://github.com/keijiro/CMUMocap.git#upm",
     "jp.keijiro.dabrovic-sponza": "https://github.com/keijiro/DabrovicSponza.git#upm",
     "jp.keijiro.danish-statues": "https://github.com/keijiro/DanishStatues.git#upm",
-    "jp.keijiro.kino.post-processing": "https://github.com/keijiro/Kino.git#upm",
     "jp.keijiro.test-assets": "https://github.com/keijiro/jp.keijiro.test-assets.git",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.audio": "1.0.0",
     "com.unity.modules.director": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
     "com.unity.modules.imgui": "1.0.0",
     "com.unity.modules.jsonserialize": "1.0.0",
     "com.unity.modules.particlesystem": "1.0.0",
     "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.ui": "1.0.0",
     "com.unity.modules.unityanalytics": "1.0.0",
     "com.unity.modules.unitywebrequest": "1.0.0",
     "com.unity.modules.video": "1.0.0",
@@ -37,10 +39,6 @@
     },
     "jp.keijiro.danish-statues": {
       "hash": "de6f1eac24342e8fac2ab7d4d19e0755cbfa8ebe",
-      "revision": "upm"
-    },
-    "jp.keijiro.kino.post-processing": {
-      "hash": "0996b2d07dc1000963cc7264e5528abbebde8425",
       "revision": "upm"
     },
     "jp.keijiro.test-assets": {

@@ -28,7 +28,7 @@ public class StickerController : MonoBehaviour
             _stickers[i] = Instantiate(_template, transform);
             var projector = GetProjector(_stickers[i]);
 
-            var material = Instantiate(projector.Mat);
+            var material = Instantiate(projector.m_Material);
             material.SetTexture("_BaseColorMap", _textures[i % _textures.Length]);
             projector.m_Material = material;
 

@@ -28,7 +28,7 @@ struct Attributes
 #ifdef ATTRIBUTES_NEED_TEXCOORD3
     float2 uv3          : TEXCOORD3;
 #endif
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     float3 previousPositionOS : TEXCOORD4; // Contain previous transform position (in case of skinning for example)
 #endif
 #ifdef ATTRIBUTES_NEED_COLOR
@@ -79,13 +79,19 @@ PackedVaryingsType PackVertexData(
 )
 {
     source.positionOS = position;
+#if defined(VARYINGS_NEED_TEXCOORD1) || defined(VARYINGS_DS_NEED_TEXCOORD1)
+    // FIXME: I'm not sure why but the shader compiler emits an "unexpected
+    // LEFT_BRACKET" error on Vulkan. Strangely, it disappears by touching UV1
+    // before calling VertMesh.
+    source.uv1 = source.uv1 + 1e-12;
+#endif
 #ifdef ATTRIBUTES_NEED_NORMAL
     source.normalOS = normal;
 #endif
 #ifdef ATTRIBUTES_NEED_COLOR
     source.color = color;
 #endif
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     AttributesPass attrib;
     attrib.previousPositionOS = position_prev;
     return Vert(source, attrib);

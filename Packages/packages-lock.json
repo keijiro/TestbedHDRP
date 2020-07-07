@@ -76,39 +76,39 @@
       "url": "https://packages.unity.com"
     },
     "jp.keijiro.beta": {
-      "version": "https://github.com/keijiro/jp.keijiro.beta.git",
+      "version": "1.0.1",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "01208e373fccf53416e68dfc1afb775d0c3219f4"
+      "url": "https://registry.npmjs.com"
     },
     "jp.keijiro.cmu-mocap": {
-      "version": "https://github.com/keijiro/CMUMocap.git#upm",
+      "version": "1.0.0",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "8fda0c1770156a047ed44868c5132748960b01cf"
+      "url": "https://registry.npmjs.com"
     },
     "jp.keijiro.dabrovic-sponza": {
-      "version": "https://github.com/keijiro/DabrovicSponza.git#upm",
+      "version": "1.0.0",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "24ec3c682d9a125a3d92f7d6070b6a118aa1f973"
+      "url": "https://registry.npmjs.com"
     },
     "jp.keijiro.danish-statues": {
-      "version": "https://github.com/keijiro/DanishStatues.git#upm",
+      "version": "0.0.4",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "de6f1eac24342e8fac2ab7d4d19e0755cbfa8ebe"
+      "url": "https://registry.npmjs.com"
     },
     "jp.keijiro.test-assets": {
-      "version": "https://github.com/keijiro/jp.keijiro.test-assets.git",
+      "version": "1.0.1",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "01619e6a98ff383b7cb2ea27e6a0d39702c7c8f3"
+      "url": "https://registry.npmjs.com"
     },
     "com.unity.modules.animation": {
       "version": "1.0.0",

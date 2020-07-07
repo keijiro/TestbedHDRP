@@ -1,12 +1,19 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [ "jp.keijiro" ]
+    }
+  ],
   "dependencies": {
     "com.unity.mathematics": "1.1.0",
     "com.unity.render-pipelines.high-definition": "7.4.1",
     "com.unity.timeline": "1.4.0",
-    "jp.keijiro.beta": "https://github.com/keijiro/jp.keijiro.beta.git",
-    "jp.keijiro.cmu-mocap": "https://github.com/keijiro/CMUMocap.git#upm",
-    "jp.keijiro.dabrovic-sponza": "https://github.com/keijiro/DabrovicSponza.git#upm",
-    "jp.keijiro.danish-statues": "https://github.com/keijiro/DanishStatues.git#upm",
-    "jp.keijiro.test-assets": "https://github.com/keijiro/jp.keijiro.test-assets.git"
+    "jp.keijiro.beta": "1.0.1",
+    "jp.keijiro.cmu-mocap": "1.0.0",
+    "jp.keijiro.dabrovic-sponza": "1.0.0",
+    "jp.keijiro.danish-statues": "0.0.4",
+    "jp.keijiro.test-assets": "1.0.1"
   }
 }

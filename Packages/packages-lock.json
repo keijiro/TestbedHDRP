@@ -1,0 +1,147 @@
+{
+  "dependencies": {
+    "com.unity.mathematics": {
+      "version": "1.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.render-pipelines.core": {
+      "version": "7.4.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.render-pipelines.high-definition": {
+      "version": "7.4.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "7.4.1",
+        "com.unity.shadergraph": "7.4.1",
+        "com.unity.visualeffectgraph": "7.4.1",
+        "com.unity.render-pipelines.high-definition-config": "7.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.render-pipelines.high-definition-config": {
+      "version": "7.4.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "7.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.shadergraph": {
+      "version": "7.4.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "7.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.timeline": {
+      "version": "1.4.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.director": "1.0.0",
+        "com.unity.modules.animation": "1.0.0",
+        "com.unity.modules.audio": "1.0.0",
+        "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.ugui": {
+      "version": "1.0.0",
+      "depth": 2,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0"
+      }
+    },
+    "com.unity.visualeffectgraph": {
+      "version": "7.4.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.shadergraph": "7.4.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "jp.keijiro.beta": {
+      "version": "https://github.com/keijiro/jp.keijiro.beta.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "01208e373fccf53416e68dfc1afb775d0c3219f4"
+    },
+    "jp.keijiro.cmu-mocap": {
+      "version": "https://github.com/keijiro/CMUMocap.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "8fda0c1770156a047ed44868c5132748960b01cf"
+    },
+    "jp.keijiro.dabrovic-sponza": {
+      "version": "https://github.com/keijiro/DabrovicSponza.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "24ec3c682d9a125a3d92f7d6070b6a118aa1f973"
+    },
+    "jp.keijiro.danish-statues": {
+      "version": "https://github.com/keijiro/DanishStatues.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "de6f1eac24342e8fac2ab7d4d19e0755cbfa8ebe"
+    },
+    "jp.keijiro.test-assets": {
+      "version": "https://github.com/keijiro/jp.keijiro.test-assets.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "01619e6a98ff383b7cb2ea27e6a0d39702c7c8f3"
+    },
+    "com.unity.modules.animation": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {}
+    },
+    "com.unity.modules.audio": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {}
+    },
+    "com.unity.modules.director": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
+        "com.unity.modules.animation": "1.0.0"
+      }
+    },
+    "com.unity.modules.particlesystem": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {}
+    },
+    "com.unity.modules.ui": {
+      "version": "1.0.0",
+      "depth": 3,
+      "source": "builtin",
+      "dependencies": {}
+    }
+  }
+}

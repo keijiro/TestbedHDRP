@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Unity.Mathematics;
-using HDAdditionalLightData = UnityEngine.Experimental.Rendering.HDPipeline.HDAdditionalLightData;
+using HDAdditionalLightData = UnityEngine.Rendering.HighDefinition.HDAdditionalLightData;
 
 public class LightCordController : MonoBehaviour
 {

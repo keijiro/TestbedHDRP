@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Unity.Mathematics;
-using HDRP = UnityEngine.Experimental.Rendering.HDPipeline;
+using HDRP = UnityEngine.Rendering.HighDefinition;
 
 public class StickerController : MonoBehaviour
 {
@@ -12,9 +12,9 @@ public class StickerController : MonoBehaviour
 
     GameObject [] _stickers;
 
-    HDRP.DecalProjectorComponent GetProjector(GameObject go)
+    HDRP.DecalProjector GetProjector(GameObject go)
     {
-        return go.GetComponentInChildren<HDRP.DecalProjectorComponent>();
+        return go.GetComponentInChildren<HDRP.DecalProjector>();
     }
 
     void Start()
@@ -28,9 +28,9 @@ public class StickerController : MonoBehaviour
             _stickers[i] = Instantiate(_template, transform);
             var projector = GetProjector(_stickers[i]);
 
-            var material = Instantiate(projector.m_Material);
+            var material = Instantiate(projector.material);
             material.SetTexture("_BaseColorMap", _textures[i % _textures.Length]);
-            projector.m_Material = material;
+            projector.material = material;
 
             projector.enabled = true;
         }

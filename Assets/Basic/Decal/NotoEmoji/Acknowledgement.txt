@@ -1,5 +1,0 @@
-The color emoji assets contained in this directory are obtained from Noto Emoji
-developed by Google on Noto project. These assets are distributed under the
-Apache License Version 2.0. Please check the project page for further details.
-
-https://github.com/googlei18n/noto-emoji

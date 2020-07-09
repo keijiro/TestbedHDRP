@@ -1,7 +1,7 @@
 // Regenerator effect geometry shader
 // https://github.com/keijiro/TestbedHDRP
 
-#include "Assets/CustomShader/Common/Shader/SimplexNoise3D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
 
 float3 _CellParams; // cell density, cell size, highlight probability
 float2 _AnimParams; // inflation, stretch
@@ -88,7 +88,7 @@ void RegeneratorGeometry(
     float3 p1 = v1.positionOS;
     float3 p2 = v2.positionOS;
 
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     bool hasDeformation = unity_MotionVectorsParams.x > 0.0;
     float3 p0_prev = hasDeformation ? input[0].previousPositionOS : p0;
     float3 p1_prev = hasDeformation ? input[1].previousPositionOS : p1;

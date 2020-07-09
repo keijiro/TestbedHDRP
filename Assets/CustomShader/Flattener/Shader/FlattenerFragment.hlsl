@@ -59,11 +59,8 @@ void FlattenerFragment(
 
     // Custom: Cancel the normal map while the effect is active.
     float cancel = saturate(input.color.z);
-    float3 normalWS = normalize(TransformTangentToWorld(float3(0, 0, 1), input.tangentToWorld));
-    float3 tangentWS = normalize(TransformTangentToWorld(float3(1, 0, 0), input.tangentToWorld));
     surfaceData.baseColor *= 1.0 - cancel;
-    surfaceData.normalWS = lerp(surfaceData.normalWS, normalWS, cancel);
-    surfaceData.tangentWS = lerp(surfaceData.tangentWS, tangentWS, cancel);
+    surfaceData.normalWS = lerp(surfaceData.normalWS, surfaceData.geomNormalWS, cancel);
 
     // Custom: Add the self emission term.
     builtinData.bakeDiffuseLighting += SelfEmission(input);

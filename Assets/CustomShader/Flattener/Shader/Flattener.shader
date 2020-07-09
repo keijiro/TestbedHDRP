@@ -402,7 +402,7 @@ Shader "Flattener"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassGBuffer.hlsl"
 
             // Custom: Geometry and fragment shader implementation
-            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/CustomShader/Common/CustomVertex.hlsl"
             #include "FlattenerGeometry.hlsl"
             #include "FlattenerFragment.hlsl"
 
@@ -445,7 +445,7 @@ Shader "Flattener"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
-            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/CustomShader/Common/CustomVertex.hlsl"
             #include "FlattenerGeometry.hlsl"
 
             // Custom: Shader entry points
@@ -501,7 +501,7 @@ Shader "Flattener"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
-            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/CustomShader/Common/CustomVertex.hlsl"
             #include "FlattenerGeometry.hlsl"
 
             // Custom: Shader entry points
@@ -558,7 +558,7 @@ Shader "Flattener"
             #undef unity_MotionVectorsParams
 
             // Custom: Geometry shader implementation
-            #include "Assets/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/CustomShader/Common/CustomVertex.hlsl"
             #include "FlattenerGeometry.hlsl"
 
             // Custom: Shader entry points

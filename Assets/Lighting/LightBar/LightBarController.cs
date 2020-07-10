@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using XXHash = Klak.Math.XXHash;
 
 public class LightBarController : MonoBehaviour
 {
     [Space]
-    [SerializeField] GameObject _template = null;
+    [SerializeField] GameObject _prefab = null;
     [SerializeField] uint _instanceCount = 10;
     [SerializeField] uint _randomSeed = 0;
     [Space]
@@ -16,27 +17,35 @@ public class LightBarController : MonoBehaviour
     void Start()
     {
         _bars = new GameObject[_instanceCount];
+
+        var hash = new XXHash(_randomSeed);
+
         for (var i = 0u; i < _instanceCount; i++)
         {
-            var y = (Random.Value01(i + _randomSeed) - 0.5f) * _height;
-            _bars[i] = Instantiate(_template, transform);
-            _bars[i].transform.localPosition = new Vector3(0, y, 0);
-            _bars[i].GetComponent<Light>().color =
-                Color.HSVToRGB(Random.Value01(i + _randomSeed + 4000u), 0.8f, 1);
-            _bars[i].GetComponentInChildren<Renderer>().material.SetColor("_EmissiveColor",
-                Color.HSVToRGB(Random.Value01(i + _randomSeed + 4000u), 0.8f, 1) * 5);
+            var seed = i * 2;
+            var y = (hash.Float(seed) - 0.5f) * _height;
+            var hue = hash.Float(seed + 1);
+
+            var go = Instantiate(_prefab, transform);
+            go.transform.localPosition = new Vector3(0, y, 0);
+            go.GetComponent<Light>().color = Color.HSVToRGB(hue, 0.8f, 1);
+
+            _bars[i] = go;
         }
-        Destroy(_template);
     }
 
     void Update()
     {
+        var hash = new XXHash(_randomSeed + 100);
         var t = Time.time;
+
         for (var i = 0u; i < _instanceCount; i++)
         {
             var p = _bars[i].transform.localPosition;
-            var spd = (0.5f + Random.Value01(i + _randomSeed + 10000u)) * _speed;
+
+            var spd = (hash.Float(i) + 0.5f) * _speed;
             p.x = ((spd * t) % _width) - _width * 0.5f;
+
             _bars[i].transform.localPosition = p;
         }
     }

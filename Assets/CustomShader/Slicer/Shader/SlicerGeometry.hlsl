@@ -20,7 +20,7 @@ float AnimationParameter(float4 plane, float3 position_os, uint primitive_id)
 // Normal vector calculation
 half3 CalculateNormal(float3 p0, float3 p1, float3 p2)
 {
-    return normalize(cross(p1 - p0, p2 - p0));
+    return normalize(cross(p1 - p0, p2 - p0) + half3(0, 0, 1e-7));
 }
 
 // Cube vertices data
@@ -117,7 +117,7 @@ void SlicerGeometry(
     float3 p1_c = v1.positionOS;
     float3 p2_c = v2.positionOS;
 
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     bool hasDeformation = unity_MotionVectorsParams.x > 0.0;
     float3 p0_p = hasDeformation ? input[0].previousPositionOS : p0_c;
     float3 p1_p = hasDeformation ? input[1].previousPositionOS : p1_c;

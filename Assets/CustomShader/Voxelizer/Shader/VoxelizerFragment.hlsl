@@ -66,15 +66,11 @@ void VoxelizerFragment(
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
 
     // Custom: Normal map cancelling
-    surfaceData.normalWS = lerp(surfaceData.normalWS, input.worldToTangent[2], input.color.b);
-    surfaceData.tangentWS = lerp(surfaceData.tangentWS, input.worldToTangent[0], input.color.b);
+    float cancel = saturate(input.color.y);
+    surfaceData.normalWS = lerp(surfaceData.normalWS, surfaceData.geomNormalWS, cancel);
 
     // Custom: Self emission term
     builtinData.bakeDiffuseLighting += SelfEmission(input);
-
-#ifdef DEBUG_DISPLAY
-    ApplyDebugToSurfaceData(input.worldToTangent, surfaceData);
-#endif
 
     ENCODE_INTO_GBUFFER(surfaceData, builtinData, posInput.positionSS, outGBuffer);
 

@@ -92,7 +92,7 @@ void FlattenerGeometry(
     float3 p1_c = v1.positionOS;
     float3 p2_c = v2.positionOS;
 
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     bool hasDeformation = unity_MotionVectorsParams.x > 0.0;
     float3 p0_p = hasDeformation ? input[0].previousPositionOS : p0_c;
     float3 p1_p = hasDeformation ? input[1].previousPositionOS : p1_c;

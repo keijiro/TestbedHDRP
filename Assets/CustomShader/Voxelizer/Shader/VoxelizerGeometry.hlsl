@@ -1,7 +1,7 @@
 // Voxelizer effect geometry shader
 // https://github.com/keijiro/TestbedHDRP
 
-#include "Assets/CustomShader/Common/Shader/SimplexNoise3D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
 
 half2 _VoxelParams; // density, scale
 half3 _AnimParams;  // stretch, fall distance, fluctuation
@@ -68,7 +68,7 @@ void VoxelizerGeometry(
     float3 p1 = v1.positionOS;
     float3 p2 = v2.positionOS;
 
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     bool hasDeformation = unity_MotionVectorsParams.x > 0.0;
     float3 p0_prev = hasDeformation ? input[0].previousPositionOS : p0;
     float3 p1_prev = hasDeformation ? input[1].previousPositionOS : p1;

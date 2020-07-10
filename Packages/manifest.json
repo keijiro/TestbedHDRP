@@ -1,51 +1,20 @@
 {
-  "dependencies": {
-    "com.unity.mathematics": "0.0.12-preview.19",
-    "com.unity.package-manager-ui": "2.0.3",
-    "com.unity.render-pipelines.high-definition": "4.6.0-preview",
-    "jp.keijiro.beta": "https://github.com/keijiro/jp.keijiro.beta.git",
-    "jp.keijiro.cmu-mocap": "https://github.com/keijiro/CMUMocap.git#upm",
-    "jp.keijiro.dabrovic-sponza": "https://github.com/keijiro/DabrovicSponza.git#upm",
-    "jp.keijiro.danish-statues": "https://github.com/keijiro/DanishStatues.git#upm",
-    "jp.keijiro.kino.post-processing": "https://github.com/keijiro/Kino.git#upm",
-    "jp.keijiro.test-assets": "https://github.com/keijiro/jp.keijiro.test-assets.git",
-    "com.unity.modules.animation": "1.0.0",
-    "com.unity.modules.audio": "1.0.0",
-    "com.unity.modules.director": "1.0.0",
-    "com.unity.modules.imgui": "1.0.0",
-    "com.unity.modules.jsonserialize": "1.0.0",
-    "com.unity.modules.particlesystem": "1.0.0",
-    "com.unity.modules.physics": "1.0.0",
-    "com.unity.modules.unityanalytics": "1.0.0",
-    "com.unity.modules.unitywebrequest": "1.0.0",
-    "com.unity.modules.video": "1.0.0",
-    "com.unity.modules.vr": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
-  },
-  "lock": {
-    "jp.keijiro.beta": {
-      "hash": "01208e373fccf53416e68dfc1afb775d0c3219f4",
-      "revision": "HEAD"
-    },
-    "jp.keijiro.cmu-mocap": {
-      "hash": "8fda0c1770156a047ed44868c5132748960b01cf",
-      "revision": "upm"
-    },
-    "jp.keijiro.dabrovic-sponza": {
-      "hash": "24ec3c682d9a125a3d92f7d6070b6a118aa1f973",
-      "revision": "upm"
-    },
-    "jp.keijiro.danish-statues": {
-      "hash": "de6f1eac24342e8fac2ab7d4d19e0755cbfa8ebe",
-      "revision": "upm"
-    },
-    "jp.keijiro.kino.post-processing": {
-      "hash": "0996b2d07dc1000963cc7264e5528abbebde8425",
-      "revision": "upm"
-    },
-    "jp.keijiro.test-assets": {
-      "hash": "01619e6a98ff383b7cb2ea27e6a0d39702c7c8f3",
-      "revision": "HEAD"
+  "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [ "jp.keijiro" ]
     }
+  ],
+  "dependencies": {
+    "com.unity.render-pipelines.high-definition": "7.4.1",
+    "com.unity.timeline": "1.4.0",
+    "jp.keijiro.beta": "1.0.1",
+    "jp.keijiro.cmu-mocap": "1.0.0",
+    "jp.keijiro.dabrovic-sponza": "1.0.0",
+    "jp.keijiro.danish-statues": "0.0.4",
+    "jp.keijiro.klak.math": "1.0.1",
+    "jp.keijiro.noiseshader": "1.0.0",
+    "jp.keijiro.test-assets": "1.0.1"
   }
 }

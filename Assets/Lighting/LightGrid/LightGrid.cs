@@ -4,9 +4,10 @@ using Unity.Mathematics;
 
 public class LightGrid : MonoBehaviour
 {
-    [SerializeField] Light _template = null;
+    [SerializeField] Light _prefab = null;
     [SerializeField] int _rows = 5;
     [SerializeField] int _columns = 5;
+    [SerializeField] float _intensity = 1;
     [SerializeField] float _interval = 0.2f;
 
     List<Light> _lights = new List<Light>();
@@ -20,15 +21,13 @@ public class LightGrid : MonoBehaviour
                 var px = (x - (_columns - 0.5f) / 2) * _interval;
                 var py = (y - (_rows    - 0.5f) / 2) * _interval;
 
-                var go = Instantiate(_template, transform);
+                var go = Instantiate(_prefab, transform);
                 go.transform.localPosition = new Vector3(px, py, 0);
                 go.transform.localRotation = Quaternion.identity;
 
                 _lights.Add(go.GetComponent<Light>());
             }
         }
-
-        Destroy(_template.gameObject);
     }
 
     void Update()
@@ -49,9 +48,11 @@ public class LightGrid : MonoBehaviour
             var col = (Color)((Vector4)(new float4(c_r, c_g, c_b, 1) / 2 + 0.5f));
             col = col.linear;
 
-            l.intensity = amp * 10;
+            l.intensity = amp * _intensity;
             l.color = col;
-            l.GetComponentInChildren<Renderer>().material.SetColor("_EmissiveColor", col * amp * 5);
+
+            l.GetComponentInChildren<Renderer>().material
+              .SetColor("_EmissiveColor", col * amp * _intensity / 2);
         }
     }
 }

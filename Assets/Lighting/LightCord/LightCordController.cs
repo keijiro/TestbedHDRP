@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Unity.Mathematics;
-using HDAdditionalLightData = UnityEngine.Experimental.Rendering.HDPipeline.HDAdditionalLightData;
+using HDAdditionalLightData = UnityEngine.Rendering.HighDefinition.HDAdditionalLightData;
 
 public class LightCordController : MonoBehaviour
 {
@@ -18,7 +18,7 @@ public class LightCordController : MonoBehaviour
     [SerializeField] float _noiseMotion = 0.5f;
     [SerializeField] float _noiseAmplitude = 0.01f;
     [Space]
-    [SerializeField] Light _lightTemplate = null;
+    [SerializeField] Light _lightPrefab = null;
 
     Vector3 [] _vertices;
     Color [] _colors;
@@ -58,9 +58,8 @@ public class LightCordController : MonoBehaviour
         _lights = new GameObject [_segmentCount];
 
         // Populate light sources
-        _lights[0] = _lightTemplate.gameObject;
-        for (var i = 1; i < _segmentCount; i++)
-            _lights[i] = Instantiate(_lightTemplate.gameObject, transform);
+        for (var i = 0; i < _segmentCount; i++)
+            _lights[i] = Instantiate(_lightPrefab.gameObject, transform);
     }
 
     void Update()

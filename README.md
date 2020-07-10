@@ -4,8 +4,8 @@ TestbedHDRP
 ![gif](https://i.imgur.com/2qlNtFC.gif)
 ![gif](https://i.imgur.com/K3k5ffi.gif)
 
-![gif](https://i.imgur.com/RQHKvIc.gif)
-![gif](https://i.imgur.com/89atwYZ.gif)
+![gif](https://i.imgur.com/m7lKcUh.gif)
+![gif](https://i.imgur.com/p29Lrap.gif)
 
 TestbedHDRP is a Unity project where I try custom effect ideas with
 [Unity HDRP]. Currently, it only contains the following two types of effects:

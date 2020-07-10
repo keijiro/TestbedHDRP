@@ -94,20 +94,8 @@ PackedVaryingsType VertexOutput(
     half emission = 0, half random = 0, half2 qcoord = -1
 )
 {
-    source.positionOS = position;
-#ifdef ATTRIBUTES_NEED_NORMAL
-    source.normalOS = normal;
-#endif
-#ifdef ATTRIBUTES_NEED_COLOR
-    source.color = half4(qcoord, emission, random);
-#endif
-#if SHADERPASS == SHADERPASS_VELOCITY
-    AttributesPass attrib;
-    attrib.previousPositionOS = position_prev;
-    return Vert(source, attrib);
-#else
-    return Vert(source);
-#endif
+    half4 color = half4(qcoord, emission, random);
+    return PackVertexData(source, position, position_prev, normal, color);
 }
 
 // Geometry shader function body
@@ -130,7 +118,7 @@ void TransporterGeometry(
     float3 p1 = v1.positionOS;
     float3 p2 = v2.positionOS;
 
-#if SHADERPASS == SHADERPASS_VELOCITY
+#if SHADERPASS == SHADERPASS_MOTION_VECTORS
     bool hasDeformation = unity_MotionVectorsParams.x > 0.0;
     float3 p0_prev = hasDeformation ? input[0].previousPositionOS : p0;
     float3 p1_prev = hasDeformation ? input[1].previousPositionOS : p1;

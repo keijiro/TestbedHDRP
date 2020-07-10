@@ -60,15 +60,10 @@ void SpiralizerFragment(
     // Custom: Cancel the normal map while the effect is active.
     float cancel = saturate(input.color.y);
     surfaceData.baseColor *= 1.0 - cancel;
-    surfaceData.normalWS = lerp(surfaceData.normalWS, input.worldToTangent[2], cancel);
-    surfaceData.tangentWS = lerp(surfaceData.tangentWS, input.worldToTangent[0], cancel);
+    surfaceData.normalWS = lerp(surfaceData.normalWS, surfaceData.geomNormalWS, cancel);
 
     // Custom: Add the self emission term.
     builtinData.bakeDiffuseLighting += SelfEmission(input);
-
-#ifdef DEBUG_DISPLAY
-    ApplyDebugToSurfaceData(input.worldToTangent, surfaceData);
-#endif
 
     ENCODE_INTO_GBUFFER(surfaceData, builtinData, posInput.positionSS, outGBuffer);
 

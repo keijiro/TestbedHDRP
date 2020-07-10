@@ -66,7 +66,7 @@ void VoxelizerFragment(
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
 
     // Custom: Normal map cancelling
-    float cancel = saturate(input.color.y);
+    float cancel = saturate(input.color.z);
     surfaceData.normalWS = lerp(surfaceData.normalWS, surfaceData.geomNormalWS, cancel);
 
     // Custom: Self emission term

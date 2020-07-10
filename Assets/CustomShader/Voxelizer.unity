@@ -834,7 +834,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1167794620}
-  - component: {fileID: 1167794621}
   m_Layer: 0
   m_Name: Camera Pivot
   m_TagString: Untagged
@@ -849,33 +848,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1167794619}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.93, z: 0}
+  m_LocalRotation: {x: 0.095666945, y: 0.060767453, z: -0.005851238, w: 0.9935396}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1549628114}
   m_Father: {fileID: 1775315628}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1167794621
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167794619}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_LocalEulerAnglesHint: {x: 11, y: 7, z: 0}
 --- !u!1 &1345559283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1482,10 +1462,10 @@ MonoBehaviour:
   _stretch: 16
   _fallDistance: 260
   _fluctuation: 1
-  _emissionColor1: {r: 0.8773585, g: 0.0613014, b: 0, a: 0}
-  _emissionColor2: {r: 0.047169805, g: 0.016739804, b: 0, a: 0}
+  _emissionColor1: {r: 2.0181055, g: 0.1441504, b: 0, a: 0}
+  _emissionColor2: {r: 0.1081128, g: 0.0360376, b: 0, a: 0}
   _transitionColor: {r: 11.984314, g: 8.156863, b: 0, a: 0}
-  _lineColor: {r: 0.43527526, g: 0.018795742, b: 0, a: 0}
+  _lineColor: {r: 1.2311977, g: 0.055459358, b: 0, a: 0}
   _renderers:
   - {fileID: 1345559284}
 --- !u!4 &2015354182

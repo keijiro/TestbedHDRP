@@ -11,9 +11,6 @@
   "dependencies": {
     "com.unity.render-pipelines.high-definition": "7.4.3",
     "com.unity.timeline": "1.4.2",
-    "jp.keijiro.beta": "1.0.1",
-    "jp.keijiro.cmu-mocap": "1.0.0",
-    "jp.keijiro.dabrovic-sponza": "1.0.0",
     "jp.keijiro.danish-statues": "0.0.4",
     "jp.keijiro.klak.math": "1.0.1",
     "jp.keijiro.noiseshader": "1.0.0",
